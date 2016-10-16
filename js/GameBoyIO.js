@@ -218,7 +218,7 @@ function import_save(blobData) {
 				cout("Importing blob \"" + blobData.blobs[index].blobID + "\"", 0);
 				if (blobData.blobs[index].blobContent) {
 					if (blobData.blobs[index].blobID.substring(0, 5) == "SRAM_") {
-						setValue("B64_" + blobData.blobs[index].blobID, base64(blobData.blobs[index].blobContent));
+						setValue("B64_" + blobData.blobs[index].blobID, window.btoa(blobData.blobs[index].blobContent));
 					}
 					else {
 						setValue(blobData.blobs[index].blobID, JSON.parse(blobData.blobs[index].blobContent));
