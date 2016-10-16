@@ -1,7 +1,7 @@
-//2010-2013 Grant Galitz - XAudioJS realtime audio output compatibility library:
+import Resampler from './resampler';
+
 var XAudioJSscriptsHandle = document.getElementsByTagName("script");
 var XAudioJSsourceHandle = XAudioJSscriptsHandle[XAudioJSscriptsHandle.length - 1].src;
-
 
 
 function XAudioServer(channels, sampleRate, minBufferSize, maxBufferSize, underRunCallback, volume, failureCallback) {
@@ -120,7 +120,7 @@ XAudioServer.prototype.initializeWebAudio = function () {
         }
         catch (error) {
             //Workaround for Safari
-            XAudioJSWebAudioContextHandle = new webkitAudioContext();
+            XAudioJSWebAudioContextHandle = new window['webkitAudioContext']();
         }
         XAudioJSWebAudioLaunchedContext = true;
     }

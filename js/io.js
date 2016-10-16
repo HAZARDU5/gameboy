@@ -60,9 +60,9 @@ export default {
 
     pause() {
         if (this.GameBoyEmulatorInitialized()) {
-            if (GameBoyEmulatorPlaying()) {
-                autoSave();
-                clearLastEmulation();
+            if (this.GameBoyEmulatorPlaying()) {
+                this.autoSave();
+                this.clearLastEmulation();
             }
             else {
                 terminal.cout("GameBoy core has already been paused.", 1);
@@ -90,7 +90,7 @@ export default {
             while (storage.findValue("FREEZE_" + this.gameboy.name + "_" + state_suffix) != null) {
                 state_suffix++;
             }
-            saveState("FREEZE_" + this.gameboy.name + "_" + state_suffix);
+            this.saveState("FREEZE_" + this.gameboy.name + "_" + state_suffix);
         }
         else {
             terminal.cout("GameBoy core cannot be saved while it has not been initialized.", 1);
@@ -109,7 +109,7 @@ export default {
                             terminal.cout("Deleting the old SRAM save due to outdated format.", 0);
                             storage.deleteValue("SRAM_" + this.gameboy.name);
                         }
-                        storage.setValue("B64_SRAM_" + this.gameboy.name, arrayToBase64(sram));
+                        storage.setValue("B64_SRAM_" + this.gameboy.name, base64.arrayToBase64(sram));
                     }
                     else {
                         terminal.cout("SRAM could not be saved because it was empty.", 1);
@@ -158,7 +158,7 @@ export default {
         try {
             if (storage.findValue("B64_SRAM_" + filename) != null) {
                 terminal.cout("Found a previous SRAM state (Will attempt to load).", 0);
-                return base64ToArray(storage.findValue("B64_SRAM_" + filename));
+                return base64.base64ToArray(storage.findValue("B64_SRAM_" + filename));
             }
             else if (storage.findValue("SRAM_" + filename) != null) {
                 terminal.cout("Found a previous SRAM state (Will attempt to load).", 0);
@@ -211,7 +211,7 @@ export default {
                 try {
                     clearLastEmulation();
                     terminal.cout("Attempting to run a saved emulation state.", 0);
-                    this.gameboy = new GameBoyCore(canvas, "");
+                    this.gameboy = new Core(canvas, "");
                     this.gameboy.savedStateFileName = filename;
                     this.gameboy.returnFromState(storage.findValue(filename));
                     run();
@@ -230,7 +230,7 @@ export default {
     },
 
     import_save(blobData) {
-        blobData = decodeBlob(blobData);
+        blobData = this.decodeBlob(blobData);
         if (blobData && blobData.blobs) {
             if (blobData.blobs.length > 0) {
                 for (var index = 0; index < blobData.blobs.length; ++index) {
@@ -269,11 +269,11 @@ export default {
         //Append the total length in bytes:
         saveString += base64.to_little_endian_dword(totalLength);
         //Append the console ID text's length:
-        saveString += to_byte(consoleID.length);
+        saveString += base64.to_byte(consoleID.length);
         //Append the console ID text:
         saveString += consoleID;
         //Append the blob ID:
-        saveString += to_byte(keyName.length);
+        saveString += base64.to_byte(keyName.length);
         saveString += keyName;
         //Now append the save data:
         saveString += base64.to_little_endian_dword(encodedData.length);
@@ -286,7 +286,7 @@ export default {
         //Figure out the initial length:
         var totalLength = 13 + 4 + 1 + consoleID.length;
         //Append the console ID text's length:
-        var saveString = to_byte(consoleID.length);
+        var saveString = base64.to_byte(consoleID.length);
         //Append the console ID text:
         saveString += consoleID;
         var keyName = "";
@@ -296,7 +296,7 @@ export default {
             keyName = blobPairs[index][0];
             encodedData = blobPairs[index][1];
             //Append the blob ID:
-            saveString += to_byte(keyName.length);
+            saveString += base64.to_byte(keyName.length);
             saveString += keyName;
             //Now append the save data:
             saveString += base64.to_little_endian_dword(encodedData.length);
@@ -391,7 +391,7 @@ export default {
 
     GameBoyKeyDown(key) {
         if (this.GameBoyEmulatorInitialized() && this.GameBoyEmulatorPlaying()) {
-            this.GameBoyJoyPadEvent(matchKey(key), true);
+            this.GameBoyJoyPadEvent(this.matchKey(key), true);
         }
     },
 
@@ -405,7 +405,7 @@ export default {
 
     GameBoyKeyUp(key) {
         if (this.GameBoyEmulatorInitialized() && this.GameBoyEmulatorPlaying()) {
-            this.GameBoyJoyPadEvent(matchKey(key), false);
+            this.GameBoyJoyPadEvent(this.matchKey(key), false);
         }
     },
 
@@ -414,22 +414,6 @@ export default {
         if (this.GameBoyEmulatorInitialized()) {
             this.gameboy.canvas.width = this.gameboy.canvas.clientWidth;
             this.gameboy.canvas.height = this.gameboy.canvas.clientHeight;
-        }
-    },
-
-    //Call this when resizing the canvas:
-    initNewCanvasSize() {
-        if (this.GameBoyEmulatorInitialized()) {
-            if (!this.settings[12]) {
-                if (this.gameboy.onscreenWidth != 160 || this.gameboy.onscreenHeight != 144) {
-                    this.gameboy.initLCD();
-                }
-            }
-            else {
-                if (this.gameboy.onscreenWidth != this.gameboy.canvas.clientWidth || this.gameboy.onscreenHeight != this.gameboy.canvas.clientHeight) {
-                    this.gameboy.initLCD();
-                }
-            }
         }
     }
 }

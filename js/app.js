@@ -1,5 +1,4 @@
-require('../css/GameBoy.scss');
-
+import '../css/GameBoy.scss';
 import windowingInitialize from './gui';
 import terminal from './terminal';
 
