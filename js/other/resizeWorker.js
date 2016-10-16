@@ -8,7 +8,7 @@ self.onmessage = function (event) {
 		case "resize":
 			resizeWorker.resize(event.data[1]);
 	}
-}
+};
 function Resize(widthOriginal, heightOriginal, targetWidth, targetHeight, colorChannels, interpolationPass) {
 	this.widthOriginal = widthOriginal;
 	this.heightOriginal = heightOriginal;
@@ -31,7 +31,7 @@ Resize.prototype.initialize = function () {
 	else {
 		throw(new Error("Invalid settings specified for the resizer."));
 	}
-}
+};
 Resize.prototype.configurePasses = function () {
 	if (this.widthOriginal == this.targetWidth) {
 		//Bypass the width resizer pass:
@@ -65,7 +65,7 @@ Resize.prototype.configurePasses = function () {
 			this.resizeHeight = (this.colorChannels == 4) ? this.resizeHeightRGBA : this.resizeHeightRGB;
 		}
 	}
-}
+};
 Resize.prototype.resizeWidthRGB = function (buffer) {
 	var ratioWeight = this.ratioWeightWidthPass;
 	var ratioWeightDivisor = 1 / ratioWeight;
@@ -116,7 +116,7 @@ Resize.prototype.resizeWidthRGB = function (buffer) {
 		outputOffset += 3;
 	} while (outputOffset < this.targetWidthMultipliedByChannels);
 	return outputBuffer;
-}
+};
 Resize.prototype.resizeWidthInterpolatedRGB = function (buffer) {
 	var ratioWeight = this.ratioWeightWidthPass;
 	var weight = 0;

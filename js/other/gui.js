@@ -496,15 +496,18 @@ function popupStorageDialog(keyName) {
 	parentContainer.appendChild(subContainer);
 	var downloadDiv = document.createElement("div");
 	downloadDiv.id = "storagePopupDownload";
+	
+	var downloadDiv2;
+	
 	if (keyName.substring(0, 9) == "B64_SRAM_") {
-		var downloadDiv2 = document.createElement("div");
+		downloadDiv2 = document.createElement("div");
 		downloadDiv2.id = "storagePopupDownloadRAW";
 		downloadDiv2.appendChild(outputLocalStorageLink("Download RAW save data.", findValue(keyName), keyName));
 		subContainer.appendChild(downloadDiv2);
 		downloadDiv.appendChild(outputLocalStorageLink("Download in import compatible format.", base64(generateBlob(keyName.substring(4), base64_decode(findValue(keyName)))), keyName));
 	}
 	else if (keyName.substring(0, 5) == "SRAM_") {
-		var downloadDiv2 = document.createElement("div");
+		downloadDiv2 = document.createElement("div");
 		downloadDiv2.id = "storagePopupDownloadRAW";
 		downloadDiv2.appendChild(outputLocalStorageLink("Download RAW save data.", base64(convertToBinary(findValue(keyName))), keyName));
 		subContainer.appendChild(downloadDiv2);
@@ -578,7 +581,6 @@ function findKey(keyNum) {
 		//An older Gecko 1.8.1/1.9.0 method of storage (Deprecated due to the obvious security hole):
 		return window.globalStorage[location.hostname].key(keyNum);
 	}
-	return null;
 }
 //Some wrappers and extensions for non-DOM3 browsers:
 function isDescendantOf(ParentElement, toCheck) {
@@ -605,7 +607,7 @@ function isDescendantOf(ParentElement, toCheck) {
 	return traverseTree(ParentElement.firstChild);
 }
 function hasChildNodes(oElement) {
-	return (typeof oElement.hasChildNodes == "function") ? oElement.hasChildNodes() : ((oElement.firstChild != null) ? true : false);
+	return (typeof oElement.hasChildNodes == "function") ? oElement.hasChildNodes() : ((oElement.firstChild != null));
 }
 function isSameNode(oCheck1, oCheck2) {
 	return (typeof oCheck1.isSameNode == "function") ? oCheck1.isSameNode(oCheck2) : (oCheck1 === oCheck2);

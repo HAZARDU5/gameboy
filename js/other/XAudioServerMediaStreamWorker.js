@@ -32,7 +32,7 @@ self.onmessage = function (event) {
 			XAudioJSChannelsAllocated = data[2];
 			XAudioJSResampledBuffer = new Float32Array(XAudioJSResampleBufferSize);
 	}
-}
+};
 //MediaStream Polyfill Event:
 self.onprocessmedia = function (event) {
 	//Get some buffer length computations:
@@ -61,7 +61,7 @@ self.onprocessmedia = function (event) {
 	event.writeAudio(XAudioJSOutputBuffer.subarray(0, apiBufferLengthAll));
 	//Request a buffer from the main thread:
 	self.postMessage(event.audioLength);
-}
+};
 //Accessory function used to determine remaining samples in the ring buffer:
 function XAudioJSResampledSamplesLeft() {
 	return ((XAudioJSResampleBufferStart <= XAudioJSResampleBufferEnd) ? 0 : XAudioJSResampleBufferSize) + XAudioJSResampleBufferEnd - XAudioJSResampleBufferStart;

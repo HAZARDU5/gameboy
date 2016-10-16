@@ -307,7 +307,7 @@ function decodeBlob(blobData) {
 	blobProperties.blobs = [];
 	if (length > 17) {
 		if (blobData.substring(0, 13) == "EMULATOR_DATA") {
-			var length = Math.min(((blobData.charCodeAt(16) & 0xFF) << 24) | ((blobData.charCodeAt(15) & 0xFF) << 16) | ((blobData.charCodeAt(14) & 0xFF) << 8) | (blobData.charCodeAt(13) & 0xFF), length);
+			length = Math.min(((blobData.charCodeAt(16) & 0xFF) << 24) | ((blobData.charCodeAt(15) & 0xFF) << 16) | ((blobData.charCodeAt(14) & 0xFF) << 8) | (blobData.charCodeAt(13) & 0xFF), length);
 			var consoleIDLength = blobData.charCodeAt(17) & 0xFF;
 			if (length > 17 + consoleIDLength) {
 				blobProperties.consoleID = blobData.substring(18, 18 + consoleIDLength);

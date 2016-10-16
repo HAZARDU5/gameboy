@@ -1888,7 +1888,7 @@ GameBoyCore.prototype.OPCODE = [
 	},
 	//0xD3 - Illegal
 	//#0xD3:
-	function (parentObj) {
+	function () {
 		cout("Illegal op code 0xD3 called, pausing emulation.", 2);
 		pause();
 	},
@@ -1967,7 +1967,7 @@ GameBoyCore.prototype.OPCODE = [
 	},
 	//0xDB - Illegal
 	//#0xDB:
-	function (parentObj) {
+	function () {
 		cout("Illegal op code 0xDB called, pausing emulation.", 2);
 		pause();
 	},
@@ -4668,14 +4668,15 @@ GameBoyCore.prototype.getROMImage = function () {
 	return this.ROMImage;
 }
 GameBoyCore.prototype.interpretCartridge = function () {
+	var index;
 	// ROM name
-	for (var index = 0x134; index < 0x13F; index++) {
+	for (index = 0x134; index < 0x13F; index++) {
 		if (this.ROMImage.charCodeAt(index) > 0) {
 			this.name += this.ROMImage[index];
 		}
 	}
 	// ROM game code (for newer games)
-	for (var index = 0x13F; index < 0x143; index++) {
+	for (index = 0x13F; index < 0x143; index++) {
 		if (this.ROMImage.charCodeAt(index) > 0) {
 			this.gameCode += this.ROMImage[index];
 		}
@@ -7046,7 +7047,7 @@ GameBoyCore.prototype.SpriteGBLayerRender = function (scanlineToRender) {
 		}
 		if (this.gfxSpriteNormalHeight) {
 			//Draw the visible sprites:
-			for (var length = this.findLowestSpriteDrawable(lineAdjusted, 0x7); spriteCount < length; ++spriteCount) {
+			for (length = this.findLowestSpriteDrawable(lineAdjusted, 0x7); spriteCount < length; ++spriteCount) {
 				OAMAddress = this.OAMAddressCache[spriteCount];
 				yoffset = (lineAdjusted - this.memory[OAMAddress]) << 3;
 				attrCode = this.memory[OAMAddress | 3];
@@ -7077,7 +7078,7 @@ GameBoyCore.prototype.SpriteGBLayerRender = function (scanlineToRender) {
 		}
 		else {
 			//Draw the visible sprites:
-			for (var length = this.findLowestSpriteDrawable(lineAdjusted, 0xF); spriteCount < length; ++spriteCount) {
+			for (length = this.findLowestSpriteDrawable(lineAdjusted, 0xF); spriteCount < length; ++spriteCount) {
 				OAMAddress = this.OAMAddressCache[spriteCount];
 				yoffset = (lineAdjusted - this.memory[OAMAddress]) << 3;
 				attrCode = this.memory[OAMAddress | 3];
@@ -7465,7 +7466,7 @@ GameBoyCore.prototype.calculateHALTPeriod = function () {
 		}
 	}
 	else {
-		var currentClocks = this.remainingClocks;
+		currentClocks = this.remainingClocks;
 	}
 	var maxClocks = (this.CPUCyclesTotal - this.emulatorTicks) << this.doubleSpeedShifter;
 	if (currentClocks >= 0) {
@@ -9457,18 +9458,20 @@ GameBoyCore.prototype.toTypedArray = function (baseArray, memtype) {
 			return [];
 		}
 		var length = baseArray.length;
+		var typedArrayTemp;
+
 		switch (memtype) {
 			case "uint8":
-				var typedArrayTemp = new Uint8Array(length);
+				typedArrayTemp = new Uint8Array(length);
 				break;
 			case "int8":
-				var typedArrayTemp = new Int8Array(length);
+				typedArrayTemp = new Int8Array(length);
 				break;
 			case "int32":
-				var typedArrayTemp = new Int32Array(length);
+				typedArrayTemp = new Int32Array(length);
 				break;
 			case "float32":
-				var typedArrayTemp = new Float32Array(length);
+				typedArrayTemp = new Float32Array(length);
 		}
 		for (var index = 0; index < length; index++) {
 			typedArrayTemp[index] = baseArray[index];
@@ -9497,25 +9500,28 @@ GameBoyCore.prototype.fromTypedArray = function (baseArray) {
 	}
 }
 GameBoyCore.prototype.getTypedArray = function (length, defaultValue, numberType) {
+	var index;
+	var arrayHandle;
 	try {
 		if (settings[5]) {
 			throw(new Error("Settings forced typed arrays to be disabled."));
 		}
+
 		switch (numberType) {
 			case "int8":
-				var arrayHandle = new Int8Array(length);
+				arrayHandle = new Int8Array(length);
 				break;
 			case "uint8":
-				var arrayHandle = new Uint8Array(length);
+				arrayHandle = new Uint8Array(length);
 				break;
 			case "int32":
-				var arrayHandle = new Int32Array(length);
+				arrayHandle = new Int32Array(length);
 				break;
 			case "float32":
-				var arrayHandle = new Float32Array(length);
+				arrayHandle = new Float32Array(length);
 		}
 		if (defaultValue != 0) {
-			var index = 0;
+			index = 0;
 			while (index < length) {
 				arrayHandle[index++] = defaultValue;
 			}
@@ -9523,8 +9529,8 @@ GameBoyCore.prototype.getTypedArray = function (length, defaultValue, numberType
 	}
 	catch (error) {
 		cout("Could not convert an array to a typed array: " + error.message, 1);
-		var arrayHandle = [];
-		var index = 0;
+		arrayHandle = [];
+		index = 0;
 		while (index < length) {
 			arrayHandle[index++] = defaultValue;
 		}

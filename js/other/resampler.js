@@ -42,7 +42,7 @@ Resampler.prototype.initialize = function () {
 	else {
 		throw(new Error("Invalid settings specified for the resampler."));
 	}
-}
+};
 Resampler.prototype.compileLinearInterpolationFunction = function () {
 	var toCompile = "var bufferLength = buffer.length;\
 	var outLength = this.outputBufferSize;\
@@ -57,7 +57,9 @@ Resampler.prototype.compileLinearInterpolationFunction = function () {
 			for (; weight < 1; weight += " + this.ratioWeight + ") {\
 				secondWeight = weight % 1;\
 				firstWeight = 1 - secondWeight;";
-	for (var channel = 0; channel < this.channels; ++channel) {
+	
+	var channel;
+	for (channel = 0; channel < this.channels; ++channel) {
 		toCompile += "outputBuffer[outputOffset++] = (this.lastOutput[" + channel + "] * firstWeight) + (buffer[" + channel + "] * secondWeight);";
 	}
 	toCompile += "}\
@@ -65,13 +67,13 @@ Resampler.prototype.compileLinearInterpolationFunction = function () {
 			for (bufferLength -= " + this.channels + ", sourceOffset = Math.floor(weight) * " + this.channels + "; outputOffset < outLength && sourceOffset < bufferLength;) {\
 				secondWeight = weight % 1;\
 				firstWeight = 1 - secondWeight;";
-	for (var channel = 0; channel < this.channels; ++channel) {
+	for (channel = 0; channel < this.channels; ++channel) {
 		toCompile += "outputBuffer[outputOffset++] = (buffer[sourceOffset" + ((channel > 0) ? (" + " + channel) : "") + "] * firstWeight) + (buffer[sourceOffset + " + (this.channels + channel) + "] * secondWeight);";
 	}
 	toCompile += "weight += " + this.ratioWeight + ";\
 				sourceOffset = Math.floor(weight) * " + this.channels + ";\
 			}";
-	for (var channel = 0; channel < this.channels; ++channel) {
+	for (channel = 0; channel < this.channels; ++channel) {
 		toCompile += "this.lastOutput[" + channel + "] = buffer[sourceOffset++];";
 	}
 	toCompile += "this.lastWeight = weight % 1;\
@@ -85,7 +87,7 @@ Resampler.prototype.compileLinearInterpolationFunction = function () {
 		throw(new Error(\"Buffer was of incorrect sample length.\"));\
 	}";
 	this.resampler = Function("buffer", toCompile);
-}
+};
 Resampler.prototype.compileMultiTapFunction = function () {
 	var toCompile = "var bufferLength = buffer.length;\
 	var outLength = this.outputBufferSize;\

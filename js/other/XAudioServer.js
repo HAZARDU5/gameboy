@@ -26,14 +26,14 @@ XAudioServer.prototype.MOZWriteAudioNoCallback = function (buffer) {
             this.samplesAlreadyWritten += this.audioHandleMoz.mozWriteAudio(resampledBuffer);
         }
     }
-}
+};
 XAudioServer.prototype.callbackBasedWriteAudioNoCallback = function (buffer) {
 	//Callback-centered audio APIs:
 	var length = buffer.length;
 	for (var bufferCounter = 0; bufferCounter < length && XAudioJSAudioBufferSize < XAudioJSMaxBufferSize;) {
 		XAudioJSAudioContextSampleBuffer[XAudioJSAudioBufferSize++] = buffer[bufferCounter++];
 	}
-}
+};
 /*Pass your samples into here!
 Pack your samples as a one-dimenional array
 With the channel samples packed uniformly.
@@ -57,7 +57,7 @@ XAudioServer.prototype.writeAudio = function (buffer) {
 		default:
 			this.failureCallback();
 	}
-}
+};
 /*Pass your samples into here if you don't want automatic callback calling:
 Pack your samples as a one-dimenional array
 With the channel samples packed uniformly.
@@ -80,7 +80,7 @@ XAudioServer.prototype.writeAudioNoCallback = function (buffer) {
 		default:
 			this.failureCallback();
 	}
-}
+};
 //Developer can use this to see how many samples to write (example: minimum buffer allotment minus remaining samples left returned from this function to make sure maximum buffering is done...)
 //If null is returned, then that means metric could not be done.
 XAudioServer.prototype.remainingBuffer = function () {
@@ -96,21 +96,21 @@ XAudioServer.prototype.remainingBuffer = function () {
 			this.failureCallback();
 			return null;
 	}
-}
+};
 XAudioServer.prototype.MOZExecuteCallback = function () {
 	//mozAudio:
 	var samplesRequested = XAudioJSMinBufferSize - this.remainingBuffer();
 	if (samplesRequested > 0) {
 		this.MOZWriteAudioNoCallback(this.underRunCallback(samplesRequested));
 	}
-}
+};
 XAudioServer.prototype.callbackBasedExecuteCallback = function () {
 	//WebKit /Flash Audio:
 	var samplesRequested = XAudioJSMinBufferSize - this.remainingBuffer();
 	if (samplesRequested > 0) {
 		this.callbackBasedWriteAudioNoCallback(this.underRunCallback(samplesRequested));
 	}
-}
+};
 //If you just want your callback called for any possible refill (Execution of callback is still conditional):
 XAudioServer.prototype.executeCallback = function () {
 	switch (this.audioType) {
@@ -126,7 +126,7 @@ XAudioServer.prototype.executeCallback = function () {
 		default:
 			this.failureCallback();
 	}
-}
+};
 //DO NOT CALL THIS, the lib calls this internally!
 XAudioServer.prototype.initializeAudio = function () {
     try {

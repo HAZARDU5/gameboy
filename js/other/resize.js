@@ -33,7 +33,7 @@ Resize.prototype.initialize = function () {
 	else {
 		throw(new Error("Invalid settings specified for the resizer."));
 	}
-}
+};
 Resize.prototype.configureWorker = function () {
 	try {
 		var parentObj = this;
@@ -41,13 +41,13 @@ Resize.prototype.configureWorker = function () {
 		this.worker.onmessage = function (event) {
 			parentObj.heightBuffer = event.data;
 			parentObj.resizeCallback(parentObj.heightBuffer);
-		}
+		};
 		this.worker.postMessage(["setup", this.widthOriginal, this.heightOriginal, this.targetWidth, this.targetHeight, this.colorChannels, this.interpolationPass]);
 	}
 	catch (error) {
 		this.useWebWorker = false;
 	}
-}
+};
 Resize.prototype.configurePasses = function () {
 	if (this.widthOriginal == this.targetWidth) {
 		//Bypass the width resizer pass:
@@ -81,7 +81,7 @@ Resize.prototype.configurePasses = function () {
 			this.resizeHeight = (this.colorChannels == 4) ? this.resizeHeightRGBA : this.resizeHeightRGB;
 		}
 	}
-}
+};
 Resize.prototype.resizeWidthRGB = function (buffer) {
 	var ratioWeight = this.ratioWeightWidthPass;
 	var ratioWeightDivisor = 1 / ratioWeight;
@@ -132,7 +132,7 @@ Resize.prototype.resizeWidthRGB = function (buffer) {
 		outputOffset += 3;
 	} while (outputOffset < this.targetWidthMultipliedByChannels);
 	return outputBuffer;
-}
+};
 Resize.prototype.resizeWidthInterpolatedRGB = function (buffer) {
 	var ratioWeight = this.ratioWeightWidthPass;
 	var weight = 0;
