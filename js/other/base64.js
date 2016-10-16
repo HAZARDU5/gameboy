@@ -9,12 +9,12 @@ function to_little_endian_word(str) {
 function to_byte(str) {
     return String.fromCharCode(str & 0xFF);
 }
-function arrayToBase64(arrayIn) {
+function arrayToBase64(array) {
     var binString = "";
-    var length = arrayIn.length;
+    var length = array.length;
     for (var index = 0; index < length; ++index) {
-        if (typeof arrayIn[index] == "number") {
-            binString += String.fromCharCode(arrayIn[index]);
+        if (typeof array[index] == "number") {
+            binString += String.fromCharCode(array[index]);
         }
     }
     return window.btoa(binString);
