@@ -1,6 +1,7 @@
 import base64 from './base64';
 import terminal from './terminal';
 import Core from './core'
+import storage from "./storage";
 
 export default {
     gameboy: null,						//GameBoyCore object.
@@ -28,14 +29,15 @@ export default {
         this.autoSave();	//If we are about to load a new game, then save the last one...
         this.gameboy = new Core(canvas, ROM);
         this.gameboy.openMBC = this.openSRAM;
-        this.gameboy.openRTC = openRTC;
+        this.gameboy.openRTC = this.openRTC;
         this.gameboy.start();
         this.run();
     },
 
     run() {
-        if (GameBoyEmulatorInitialized()) {
-            if (!GameBoyEmulatorPlaying()) {
+        var _this = this;
+        if (this.GameBoyEmulatorInitialized()) {
+            if (!this.GameBoyEmulatorPlaying()) {
                 this.gameboy.stopEmulator &= 1;
                 terminal.cout("Starting the iterator.", 0);
                 var dateObj = new Date();
@@ -43,9 +45,9 @@ export default {
                 this.gameboy.iterations = 0;
                 this.gbRunInterval = setInterval(function () {
                     if (!document.hidden && !document.msHidden && !document.mozHidden && !document.webkitHidden) {
-                        this.gameboy.run();
+                        _this.gameboy.run();
                     }
-                }, settings[6]);
+                }, this.settings[6]);
             }
             else {
                 terminal.cout("The GameBoy core is already running.", 1);
@@ -57,7 +59,7 @@ export default {
     },
 
     pause() {
-        if (GameBoyEmulatorInitialized()) {
+        if (this.GameBoyEmulatorInitialized()) {
             if (GameBoyEmulatorPlaying()) {
                 autoSave();
                 clearLastEmulation();
@@ -72,8 +74,8 @@ export default {
     },
 
     clearLastEmulation() {
-        if (GameBoyEmulatorInitialized() && GameBoyEmulatorPlaying()) {
-            clearInterval(gbRunInterval);
+        if (this.GameBoyEmulatorInitialized() && this.GameBoyEmulatorPlaying()) {
+            clearInterval(this.gbRunInterval);
             this.gameboy.stopEmulator |= 2;
             terminal.cout("The previous emulation has been cleared.", 0);
         }
@@ -83,9 +85,9 @@ export default {
     },
 
     save() {
-        if (GameBoyEmulatorInitialized()) {
+        if (this.GameBoyEmulatorInitialized()) {
             var state_suffix = 0;
-            while (findValue("FREEZE_" + this.gameboy.name + "_" + state_suffix) != null) {
+            while (storage.findValue("FREEZE_" + this.gameboy.name + "_" + state_suffix) != null) {
                 state_suffix++;
             }
             saveState("FREEZE_" + this.gameboy.name + "_" + state_suffix);
@@ -96,18 +98,18 @@ export default {
     },
 
     saveSRAM() {
-        if (GameBoyEmulatorInitialized()) {
+        if (this.GameBoyEmulatorInitialized()) {
             if (this.gameboy.cBATT) {
                 try {
                     var sram = this.gameboy.saveSRAMState();
                     if (sram.length > 0) {
                         terminal.cout("Saving the SRAM...", 0);
-                        if (findValue("SRAM_" + this.gameboy.name) != null) {
+                        if (storage.findValue("SRAM_" + this.gameboy.name) != null) {
                             //Remove the outdated storage format save:
                             terminal.cout("Deleting the old SRAM save due to outdated format.", 0);
-                            deleteValue("SRAM_" + this.gameboy.name);
+                            storage.deleteValue("SRAM_" + this.gameboy.name);
                         }
-                        setValue("B64_SRAM_" + this.gameboy.name, arrayToBase64(sram));
+                        storage.setValue("B64_SRAM_" + this.gameboy.name, arrayToBase64(sram));
                     }
                     else {
                         terminal.cout("SRAM could not be saved because it was empty.", 1);
@@ -120,7 +122,7 @@ export default {
             else {
                 terminal.cout("Cannot save a game that does not have battery backed SRAM specified.", 1);
             }
-            saveRTC();
+            this.saveRTC();
         }
         else {
             terminal.cout("GameBoy core cannot be saved while it has not been initialized.", 1);
@@ -128,11 +130,11 @@ export default {
     },
 
     saveRTC() {	//Execute this when SRAM is being saved as well.
-        if (GameBoyEmulatorInitialized()) {
+        if (this.GameBoyEmulatorInitialized()) {
             if (this.gameboy.cTIMER) {
                 try {
                     terminal.cout("Saving the RTC...", 0);
-                    setValue("RTC_" + this.gameboy.name, this.gameboy.saveRTCState());
+                    storage.setValue("RTC_" + this.gameboy.name, this.gameboy.saveRTCState());
                 }
                 catch (error) {
                     terminal.cout("Could not save the RTC of the current emulation state(\"" + error.message + "\").", 2);
@@ -145,22 +147,22 @@ export default {
     },
 
     autoSave() {
-        if (GameBoyEmulatorInitialized()) {
+        if (this.GameBoyEmulatorInitialized()) {
             terminal.cout("Automatically saving the SRAM.", 0);
-            saveSRAM();
-            saveRTC();
+            this.saveSRAM();
+            this.saveRTC();
         }
     },
 
     openSRAM(filename) {
         try {
-            if (findValue("B64_SRAM_" + filename) != null) {
+            if (storage.findValue("B64_SRAM_" + filename) != null) {
                 terminal.cout("Found a previous SRAM state (Will attempt to load).", 0);
-                return base64ToArray(findValue("B64_SRAM_" + filename));
+                return base64ToArray(storage.findValue("B64_SRAM_" + filename));
             }
-            else if (findValue("SRAM_" + filename) != null) {
+            else if (storage.findValue("SRAM_" + filename) != null) {
                 terminal.cout("Found a previous SRAM state (Will attempt to load).", 0);
-                return findValue("SRAM_" + filename);
+                return storage.findValue("SRAM_" + filename);
             }
             else {
                 terminal.cout("Could not find any previous SRAM copy for the current ROM.", 0);
@@ -174,9 +176,9 @@ export default {
 
     openRTC(filename) {
         try {
-            if (findValue("RTC_" + filename) != null) {
+            if (storage.findValue("RTC_" + filename) != null) {
                 terminal.cout("Found a previous RTC state (Will attempt to load).", 0);
-                return findValue("RTC_" + filename);
+                return storage.findValue("RTC_" + filename);
             }
             else {
                 terminal.cout("Could not find any previous RTC copy for the current ROM.", 0);
@@ -189,9 +191,9 @@ export default {
     },
 
     saveState(filename) {
-        if (GameBoyEmulatorInitialized()) {
+        if (this.GameBoyEmulatorInitialized()) {
             try {
-                setValue(filename, this.gameboy.saveState());
+                storage.setValue(filename, this.gameboy.saveState());
                 terminal.cout("Saved the current state as: " + filename, 0);
             }
             catch (error) {
@@ -205,17 +207,17 @@ export default {
 
     openState(filename, canvas) {
         try {
-            if (findValue(filename) != null) {
+            if (storage.findValue(filename) != null) {
                 try {
                     clearLastEmulation();
                     terminal.cout("Attempting to run a saved emulation state.", 0);
                     this.gameboy = new GameBoyCore(canvas, "");
                     this.gameboy.savedStateFileName = filename;
-                    this.gameboy.returnFromState(findValue(filename));
+                    this.gameboy.returnFromState(storage.findValue(filename));
                     run();
                 }
                 catch (error) {
-                    alert(error.message + " file: " + error.fileName + " line: " + error.lineNumber);
+                    terminal.cout(error.message + " file: " + error.fileName + " line: " + error.lineNumber);
                 }
             }
             else {
@@ -235,10 +237,10 @@ export default {
                     terminal.cout("Importing blob \"" + blobData.blobs[index].blobID + "\"", 0);
                     if (blobData.blobs[index].blobContent) {
                         if (blobData.blobs[index].blobID.substring(0, 5) == "SRAM_") {
-                            setValue("B64_" + blobData.blobs[index].blobID, window.btoa(blobData.blobs[index].blobContent));
+                            storage.setValue("B64_" + blobData.blobs[index].blobID, window.btoa(blobData.blobs[index].blobContent));
                         }
                         else {
-                            setValue(blobData.blobs[index].blobID, JSON.parse(blobData.blobs[index].blobContent));
+                            storage.setValue(blobData.blobs[index].blobID, JSON.parse(blobData.blobs[index].blobContent));
                         }
                     }
                     else if (blobData.blobs[index].blobID) {
@@ -388,13 +390,13 @@ export default {
     },
 
     GameBoyKeyDown(key) {
-        if (Io.GameBoyEmulatorInitialized() && GameBoyEmulatorPlaying()) {
-            GameBoyJoyPadEvent(matchKey(key), true);
+        if (this.GameBoyEmulatorInitialized() && this.GameBoyEmulatorPlaying()) {
+            this.GameBoyJoyPadEvent(matchKey(key), true);
         }
     },
 
     GameBoyJoyPadEvent(keycode, down) {
-        if (Io.GameBoyEmulatorInitialized() && GameBoyEmulatorPlaying()) {
+        if (this.GameBoyEmulatorInitialized() && this.GameBoyEmulatorPlaying()) {
             if (keycode >= 0 && keycode < 8) {
                 this.gameboy.JoyPadEvent(keycode, down);
             }
@@ -402,24 +404,8 @@ export default {
     },
 
     GameBoyKeyUp(key) {
-        if (Io.GameBoyEmulatorInitialized() && GameBoyEmulatorPlaying()) {
-            GameBoyJoyPadEvent(matchKey(key), false);
-        }
-    },
-
-    GameBoyGyroSignalHandler(e) {
         if (this.GameBoyEmulatorInitialized() && this.GameBoyEmulatorPlaying()) {
-            if (e.gamma || e.beta) {
-                this.gameboy.GyroEvent(e.gamma * Math.PI / 180, e.beta * Math.PI / 180);
-            }
-            else {
-                this.gameboy.GyroEvent(e.x, e.y);
-            }
-            try {
-                e.preventDefault();
-            }
-            catch (error) {
-            }
+            this.GameBoyJoyPadEvent(matchKey(key), false);
         }
     },
 
@@ -433,8 +419,8 @@ export default {
 
     //Call this when resizing the canvas:
     initNewCanvasSize() {
-        if (Io.GameBoyEmulatorInitialized()) {
-            if (!settings[12]) {
+        if (this.GameBoyEmulatorInitialized()) {
+            if (!this.settings[12]) {
                 if (this.gameboy.onscreenWidth != 160 || this.gameboy.onscreenHeight != 144) {
                     this.gameboy.initLCD();
                 }

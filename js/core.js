@@ -1,4 +1,7 @@
 import terminal from './terminal';
+import io from './io';
+import XAudioServer from './XAudioServer';
+
 /*
  JavaScript GameBoy Color Emulator
  Copyright (C) 2010-2016 Grant Galitz
@@ -4606,7 +4609,7 @@ Core.prototype.initBootstrap = function () {
 Core.prototype.ROMLoad = function () {
     //Load the first two ROM banks (0x0000 - 0x7FFF) into regular gameboy memory:
     this.ROM = [];
-    this.usedBootROM = settings[1] && ((!settings[11] && this.GBCBOOTROM.length == 0x800) || (settings[11] && this.GBBOOTROM.length == 0x100));
+    this.usedBootROM = io.settings[1] && ((!io.settings[11] && this.GBCBOOTROM.length == 0x800) || (io.settings[11] && this.GBBOOTROM.length == 0x100));
     var maxLength = this.ROMImage.length;
     if (maxLength < 0x4000) {
         throw(new Error("ROM image size too small."));
@@ -4614,7 +4617,7 @@ Core.prototype.ROMLoad = function () {
     this.ROM = this.getTypedArray(maxLength, 0, "uint8");
     var romIndex = 0;
     if (this.usedBootROM) {
-        if (!settings[11]) {
+        if (!io.settings[11]) {
             //Patch in the GBC boot ROM into the memory map:
             for (; romIndex < 0x100; ++romIndex) {
                 this.memory[romIndex] = this.GBCBOOTROM[romIndex];											//Load in the GameBoy Color BOOT ROM.
@@ -4691,7 +4694,7 @@ Core.prototype.interpretCartridge = function () {
     switch (this.cartridgeType) {
         case 0x00:
             //ROM w/o bank switching
-            if (!settings[9]) {
+            if (!io.settings[9]) {
                 MBCType = "ROM";
                 break;
             }
@@ -4856,7 +4859,7 @@ Core.prototype.interpretCartridge = function () {
                 terminal.cout("Only GB mode detected.", 0);
                 break;
             case 0x32:	//Exception to the GBC identifying code:
-                if (!settings[2] && this.name + this.gameCode + this.ROM[0x143] == "Game and Watch 50") {
+                if (!io.settings[2] && this.name + this.gameCode + this.ROM[0x143] == "Game and Watch 50") {
                     this.cGBC = true;
                     terminal.cout("Created a boot exception for Game and Watch Gallery 2 (GBC ID byte is wrong on the cartridge).", 1);
                 }
@@ -4865,7 +4868,7 @@ Core.prototype.interpretCartridge = function () {
                 }
                 break;
             case 0x80:	//Both GB + GBC modes
-                this.cGBC = !settings[2];
+                this.cGBC = !io.settings[2];
                 terminal.cout("GB and GBC mode detected.", 0);
                 break;
             case 0xC0:	//Only GBC mode
@@ -4924,7 +4927,7 @@ Core.prototype.disableBootROM = function () {
 Core.prototype.initializeTiming = function () {
     //Emulator Timing:
     this.clocksPerSecond = this.emulatorSpeed * 0x400000;
-    this.baseCPUCyclesPerIteration = this.clocksPerSecond / 1000 * settings[6];
+    this.baseCPUCyclesPerIteration = this.clocksPerSecond / 1000 * io.settings[6];
     this.CPUCyclesTotalRoundoff = this.baseCPUCyclesPerIteration % 4;
     this.CPUCyclesTotalBase = this.CPUCyclesTotal = (this.baseCPUCyclesPerIteration - this.CPUCyclesTotalRoundoff) | 0;
     this.CPUCyclesTotalCurrent = 0;
@@ -4979,21 +4982,21 @@ Core.prototype.MBCRAMUtilized = function () {
     return this.cMBC1 || this.cMBC2 || this.cMBC3 || this.cMBC5 || this.cMBC7 || this.cRUMBLE;
 }
 Core.prototype.recomputeDimension = function () {
-    initNewCanvas();
+    io.initNewCanvas();
     //Cache some dimension info:
     this.onscreenWidth = this.canvas.width;
     this.onscreenHeight = this.canvas.height;
     if (window && window.mozRequestAnimationFrame || (navigator.userAgent.toLowerCase().indexOf("gecko") != -1 && navigator.userAgent.toLowerCase().indexOf("like gecko") == -1)) {
         //Firefox slowness hack:
-        this.canvas.width = this.onscreenWidth = (!settings[12]) ? 160 : this.canvas.width;
-        this.canvas.height = this.onscreenHeight = (!settings[12]) ? 144 : this.canvas.height;
+        this.canvas.width = this.onscreenWidth = (!io.settings[12]) ? 160 : this.canvas.width;
+        this.canvas.height = this.onscreenHeight = (!io.settings[12]) ? 144 : this.canvas.height;
     }
     else {
         this.onscreenWidth = this.canvas.width;
         this.onscreenHeight = this.canvas.height;
     }
-    this.offscreenWidth = (!settings[12]) ? 160 : this.canvas.width;
-    this.offscreenHeight = (!settings[12]) ? 144 : this.canvas.height;
+    this.offscreenWidth = (!io.settings[12]) ? 160 : this.canvas.width;
+    this.offscreenHeight = (!io.settings[12]) ? 144 : this.canvas.height;
     this.offscreenRGBCount = this.offscreenWidth * this.offscreenHeight * 4;
 }
 Core.prototype.initLCD = function () {
@@ -5012,14 +5015,14 @@ Core.prototype.initLCD = function () {
         this.canvasOffscreen.height = this.offscreenHeight;
         this.drawContextOffscreen = this.canvasOffscreen.getContext("2d");
         this.drawContextOnscreen = this.canvas.getContext("2d");
-        this.canvas.setAttribute("style", (this.canvas.getAttribute("style") || "") + "; image-rendering: " + ((settings[13]) ? "auto" : "-webkit-optimize-contrast") + ";" +
-            "image-rendering: " + ((settings[13]) ? "optimizeQuality" : "-o-crisp-edges") + ";" +
-            "image-rendering: " + ((settings[13]) ? "optimizeQuality" : "-moz-crisp-edges") + ";" +
-            "-ms-interpolation-mode: " + ((settings[13]) ? "bicubic" : "nearest-neighbor") + ";");
-        this.drawContextOffscreen.webkitImageSmoothingEnabled = settings[13];
-        this.drawContextOffscreen.mozImageSmoothingEnabled = settings[13];
-        this.drawContextOnscreen.webkitImageSmoothingEnabled = settings[13];
-        this.drawContextOnscreen.mozImageSmoothingEnabled = settings[13];
+        this.canvas.setAttribute("style", (this.canvas.getAttribute("style") || "") + "; image-rendering: " + ((io.settings[13]) ? "auto" : "-webkit-optimize-contrast") + ";" +
+            "image-rendering: " + ((io.settings[13]) ? "optimizeQuality" : "-o-crisp-edges") + ";" +
+            "image-rendering: " + ((io.settings[13]) ? "optimizeQuality" : "-moz-crisp-edges") + ";" +
+            "-ms-interpolation-mode: " + ((io.settings[13]) ? "bicubic" : "nearest-neighbor") + ";");
+        this.drawContextOffscreen.webkitImageSmoothingEnabled = io.settings[13];
+        this.drawContextOffscreen.mozImageSmoothingEnabled = io.settings[13];
+        this.drawContextOnscreen.webkitImageSmoothingEnabled = io.settings[13];
+        this.drawContextOnscreen.mozImageSmoothingEnabled = io.settings[13];
         //Get a CanvasPixelArray buffer:
         try {
             this.canvasBuffer = this.drawContextOffscreen.createImageData(this.offscreenWidth, this.offscreenHeight);
@@ -5085,9 +5088,9 @@ Core.prototype.GyroEvent = function (x, y) {
 Core.prototype.initSound = function () {
     this.audioResamplerFirstPassFactor = Math.max(Math.min(Math.floor(this.clocksPerSecond / 44100), Math.floor(0xFFFF / 0x1E0)), 1);
     this.downSampleInputDivider = 1 / (this.audioResamplerFirstPassFactor * 0xF0);
-    if (settings[0]) {
-        this.audioHandle = new XAudioServer(2, this.clocksPerSecond / this.audioResamplerFirstPassFactor, 0, Math.max(this.baseCPUCyclesPerIteration * settings[8] / this.audioResamplerFirstPassFactor, 8192) << 1, null, settings[3], function () {
-            settings[0] = false;
+    if (io.settings[0]) {
+        this.audioHandle = new XAudioServer(2, this.clocksPerSecond / this.audioResamplerFirstPassFactor, 0, Math.max(this.baseCPUCyclesPerIteration * io.settings[8] / this.audioResamplerFirstPassFactor, 8192) << 1, null, io.settings[3], function () {
+            io.settings[0] = false;
         });
         this.initAudioBuffer();
     }
@@ -5097,15 +5100,15 @@ Core.prototype.initSound = function () {
     }
 }
 Core.prototype.changeVolume = function () {
-    if (settings[0] && this.audioHandle) {
-        this.audioHandle.changeVolume(settings[3]);
+    if (io.settings[0] && this.audioHandle) {
+        this.audioHandle.changeVolume(io.settings[3]);
     }
 }
 Core.prototype.initAudioBuffer = function () {
     this.audioIndex = 0;
     this.audioDestinationPosition = 0;
     this.downsampleInput = 0;
-    this.bufferContainAmount = Math.max(this.baseCPUCyclesPerIteration * settings[7] / this.audioResamplerFirstPassFactor, 4096) << 1;
+    this.bufferContainAmount = Math.max(this.baseCPUCyclesPerIteration * io.settings[7] / this.audioResamplerFirstPassFactor, 4096) << 1;
     this.numSamplesTotal = (this.baseCPUCyclesPerIteration / this.audioResamplerFirstPassFactor) << 1;
     this.audioBuffer = this.getTypedArray(this.numSamplesTotal, 0, "float32");
 }
@@ -5169,7 +5172,7 @@ Core.prototype.intializeWhiteNoise = function () {
     this.noiseSampleTable = this.LSFR15Table;
 }
 Core.prototype.audioUnderrunAdjustment = function () {
-    if (settings[0]) {
+    if (io.settings[0]) {
         var underrunAmount = this.audioHandle.remainingBuffer();
         if (typeof underrunAmount == "number") {
             underrunAmount = this.bufferContainAmount - Math.max(underrunAmount, 0);
@@ -5324,7 +5327,7 @@ Core.prototype.generateAudioFake = function (numSamples) {
 }
 Core.prototype.audioJIT = function () {
     //Audio Sample Generation Timing:
-    if (settings[0]) {
+    if (io.settings[0]) {
         this.generateAudio(this.audioTicks);
     }
     else {
@@ -5599,7 +5602,7 @@ Core.prototype.channel1OutputLevelSecondaryCache = function () {
     this.channel1OutputLevelTrimaryCache();
 }
 Core.prototype.channel1OutputLevelTrimaryCache = function () {
-    if (this.channel1CachedDuty[this.channel1DutyTracker] && settings[14][0]) {
+    if (this.channel1CachedDuty[this.channel1DutyTracker] && io.settings[14][0]) {
         this.channel1currentSampleLeftTrimary = this.channel1currentSampleLeftSecondary;
         this.channel1currentSampleRightTrimary = this.channel1currentSampleRightSecondary;
     }
@@ -5635,7 +5638,7 @@ Core.prototype.channel2OutputLevelSecondaryCache = function () {
     this.channel2OutputLevelTrimaryCache();
 }
 Core.prototype.channel2OutputLevelTrimaryCache = function () {
-    if (this.channel2CachedDuty[this.channel2DutyTracker] && settings[14][1]) {
+    if (this.channel2CachedDuty[this.channel2DutyTracker] && io.settings[14][1]) {
         this.channel2currentSampleLeftTrimary = this.channel2currentSampleLeftSecondary;
         this.channel2currentSampleRightTrimary = this.channel2currentSampleRightSecondary;
     }
@@ -5655,7 +5658,7 @@ Core.prototype.channel3OutputLevelCache = function () {
     this.channel3OutputLevelSecondaryCache();
 }
 Core.prototype.channel3OutputLevelSecondaryCache = function () {
-    if (this.channel3Enabled && settings[14][2]) {
+    if (this.channel3Enabled && io.settings[14][2]) {
         this.channel3currentSampleLeftSecondary = this.channel3currentSampleLeft;
         this.channel3currentSampleRightSecondary = this.channel3currentSampleRight;
     }
@@ -5680,7 +5683,7 @@ Core.prototype.channel4OutputLevelCache = function () {
     this.channel4OutputLevelSecondaryCache();
 }
 Core.prototype.channel4OutputLevelSecondaryCache = function () {
-    if (this.channel4Enabled && settings[14][3]) {
+    if (this.channel4Enabled && io.settings[14][3]) {
         this.channel4currentSampleLeftSecondary = this.channel4currentSampleLeft;
         this.channel4currentSampleRightSecondary = this.channel4currentSampleRight;
     }
@@ -6295,7 +6298,7 @@ Core.prototype.resizeFrameBuffer = function () {
 Core.prototype.compileResizeFrameBufferFunction = function () {
     if (this.offscreenRGBCount > 0) {
         var parentObj = this;
-        this.resizer = new Resize(160, 144, this.offscreenWidth, this.offscreenHeight, false, settings[13], false, function (buffer) {
+        this.resizer = new Resize(160, 144, this.offscreenWidth, this.offscreenHeight, false, io.settings[13], false, function (buffer) {
             if ((buffer.length / 3 * 4) == parentObj.offscreenRGBCount) {
                 parentObj.processDraw(buffer);
             }
@@ -6373,7 +6376,7 @@ Core.prototype.GBCtoGBModeAdjust = function () {
     terminal.cout("Stepping down from GBC mode.", 0);
     this.VRAM = this.GBCMemory = this.BGCHRCurrentBank = this.BGCHRBank2 = null;
     this.tileCache.length = 0x700;
-    if (settings[4]) {
+    if (io.settings[4]) {
         this.gbBGColorizedPalette = this.getTypedArray(4, 0, "int32");
         this.gbOBJColorizedPalette = this.getTypedArray(8, 0, "int32");
         this.cachedBGPaletteConversion = this.getTypedArray(4, 0, "int32");
@@ -7956,7 +7959,7 @@ Core.prototype.memoryReadROM = function (parentObj, address) {
 }
 Core.prototype.memoryReadMBC = function (parentObj, address) {
     //Switchable RAM
-    if (parentObj.MBCRAMBanksEnabled || settings[10]) {
+    if (parentObj.MBCRAMBanksEnabled || io.settings[10]) {
         return parentObj.MBCRam[address + parentObj.currMBCRAMBankPosition];
     }
     //terminal.cout("Reading from disabled RAM.", 1);
@@ -7964,7 +7967,7 @@ Core.prototype.memoryReadMBC = function (parentObj, address) {
 }
 Core.prototype.memoryReadMBC7 = function (parentObj, address) {
     //Switchable RAM
-    if (parentObj.MBCRAMBanksEnabled || settings[10]) {
+    if (parentObj.MBCRAMBanksEnabled || io.settings[10]) {
         switch (address) {
             case 0xA000:
             case 0xA060:
@@ -7994,7 +7997,7 @@ Core.prototype.memoryReadMBC7 = function (parentObj, address) {
 }
 Core.prototype.memoryReadMBC3 = function (parentObj, address) {
     //Switchable RAM
-    if (parentObj.MBCRAMBanksEnabled || settings[10]) {
+    if (parentObj.MBCRAMBanksEnabled || io.settings[10]) {
         switch (parentObj.currMBCRAMBank) {
             case 0x00:
             case 0x01:
@@ -8322,12 +8325,12 @@ Core.prototype.memoryHighWriteNormal = function (parentObj, address, data) {
     parentObj.memory[0xFF00 | address] = data;
 }
 Core.prototype.memoryWriteMBCRAM = function (parentObj, address, data) {
-    if (parentObj.MBCRAMBanksEnabled || settings[10]) {
+    if (parentObj.MBCRAMBanksEnabled || io.settings[10]) {
         parentObj.MBCRam[address + parentObj.currMBCRAMBankPosition] = data;
     }
 }
 Core.prototype.memoryWriteMBC3RAM = function (parentObj, address, data) {
-    if (parentObj.MBCRAMBanksEnabled || settings[10]) {
+    if (parentObj.MBCRAMBanksEnabled || io.settings[10]) {
         switch (parentObj.currMBCRAMBank) {
             case 0x00:
             case 0x01:
@@ -9451,7 +9454,7 @@ Core.prototype.recompileBootIOWriteHandling = function () {
 //Helper Functions
 Core.prototype.toTypedArray = function (baseArray, memtype) {
     try {
-        if (settings[5]) {
+        if (io.settings[5]) {
             return baseArray;
         }
         if (!baseArray || !baseArray.length) {
@@ -9503,7 +9506,7 @@ Core.prototype.getTypedArray = function (length, defaultValue, numberType) {
     var index;
     var arrayHandle;
     try {
-        if (settings[5]) {
+        if (io.settings[5]) {
             throw(new Error("Settings forced typed arrays to be disabled."));
         }
 

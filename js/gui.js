@@ -3,6 +3,8 @@ import windowCreate from './gui/windowCreate';
 import terminal from './terminal';
 import dom from './gui/dom';
 import io from './io';
+import handlers from './gui/handlers';
+import storage from './storage';
 
 var windowStacks = [];
 var inFullscreen = false;
@@ -118,8 +120,8 @@ function registerGUIEvents() {
             keyUp(event);
         }
     });
-    dom.addEvent("MozOrientation", window, io.GameBoyGyroSignalHandler);
-    dom.addEvent("deviceorientation", window, io.GameBoyGyroSignalHandler);
+    dom.addEvent("MozOrientation", window, handlers.GameBoyGyroSignalHandler);
+    dom.addEvent("deviceorientation", window, handlers.GameBoyGyroSignalHandler);
     new PopupMenu(document.getElementById("GameBoy_file_menu"), document.getElementById("GameBoy_file_popup"));
     dom.addEvent("click", document.getElementById("data_uri_clicker"), function () {
         var datauri = prompt("Please input the ROM image's Base 64 Encoded Text:", "");
@@ -130,7 +132,7 @@ function registerGUIEvents() {
                 start(mainCanvas, window.atob(datauri));
             }
             catch (error) {
-                alert(error.message + " file: " + error.fileName + " line: " + error.lineNumber);
+                terminal.cout(error.message + " file: " + error.fileName + " line: " + error.lineNumber);
             }
         }
     });
@@ -171,13 +173,14 @@ function registerGUIEvents() {
                         binaryHandle.onload = function () {
                             if (this.readyState == 2) {
                                 terminal.cout("file loaded.", 0);
-                                try {
+                                //todo: remover esse comentário
+                                //try {
                                     initPlayer();
-                                    start(mainCanvas, this.result);
-                                }
-                                catch (error) {
-                                    alert(error.message + " file: " + error.fileName + " line: " + error.lineNumber);
-                                }
+                                    io.start(mainCanvas, this.result);
+                                //}
+                                //catch (error) {
+                                //    terminal.cout(error.message + " file: " + error.fileName + " line: " + error.lineNumber);
+                                //}
                             }
                             else {
                                 terminal.cout("loading file, please wait...", 0);
@@ -194,7 +197,7 @@ function registerGUIEvents() {
                             start(mainCanvas, romImageString);
                         }
                         catch (error) {
-                            alert(error.message + " file: " + error.fileName + " line: " + error.lineNumber);
+                            terminal.cout(error.message + " file: " + error.fileName + " line: " + error.lineNumber);
                         }
 
                     }
@@ -228,7 +231,7 @@ function registerGUIEvents() {
                                     refreshStorageListing();
                                 }
                                 catch (error) {
-                                    alert(error.message + " file: " + error.fileName + " line: " + error.lineNumber);
+                                    terminal.cout(error.message + " file: " + error.fileName + " line: " + error.lineNumber);
                                 }
                             }
                             else {
@@ -246,7 +249,7 @@ function registerGUIEvents() {
                             refreshStorageListing();
                         }
                         catch (error) {
-                            alert(error.message + " file: " + error.fileName + " line: " + error.lineNumber);
+                            terminal.cout(error.message + " file: " + error.fileName + " line: " + error.lineNumber);
                         }
 
                     }
@@ -276,7 +279,7 @@ function registerGUIEvents() {
                 }
             }
             catch (error) {
-                alert(error.message + " file: " + error.fileName + " line: " + error.lineNumber);
+                terminal.cout(error.message + " file: " + error.fileName + " line: " + error.lineNumber);
             }
         }
         else {
@@ -437,41 +440,6 @@ function runFreeze(keyName) {
         terminal.cout("A problem with attempting to open the selected save state occurred.", 2);
     }
 }
-//Wrapper for localStorage getItem, so that data can be retrieved in various types.
-function findValue(key) {
-    try {
-        if (window.localStorage.getItem(key) != null) {
-            return JSON.parse(window.localStorage.getItem(key));
-        }
-    }
-    catch (error) {
-        //An older Gecko 1.8.1/1.9.0 method of storage (Deprecated due to the obvious security hole):
-        if (window.globalStorage[location.hostname].getItem(key) != null) {
-            return JSON.parse(window.globalStorage[location.hostname].getItem(key));
-        }
-    }
-    return null;
-}
-//Wrapper for localStorage setItem, so that data can be set in various types.
-function setValue(key, value) {
-    try {
-        window.localStorage.setItem(key, JSON.stringify(value));
-    }
-    catch (error) {
-        //An older Gecko 1.8.1/1.9.0 method of storage (Deprecated due to the obvious security hole):
-        window.globalStorage[location.hostname].setItem(key, JSON.stringify(value));
-    }
-}
-//Wrapper for localStorage removeItem, so that data can be set in various types.
-function deleteValue(key) {
-    try {
-        window.localStorage.removeItem(key);
-    }
-    catch (error) {
-        //An older Gecko 1.8.1/1.9.0 method of storage (Deprecated due to the obvious security hole):
-        window.globalStorage[location.hostname].removeItem(key);
-    }
-}
 function outputLocalStorageLink(keyName, dataFound, downloadName) {
     return generateDownloadLink("data:application/octet-stream;base64," + dataFound, keyName, downloadName);
 }
@@ -481,7 +449,7 @@ function refreshFreezeListing() {
     storageListMasterDiv.removeChild(storageListMasterDivSub);
     storageListMasterDivSub = document.createElement("div");
     storageListMasterDivSub.id = "freezeListingMasterContainerSub";
-    var keys = getLocalStorageKeys();
+    var keys = storage.getLocalStorageKeys();
     while (keys.length > 0) {
         key = keys.shift();
         if (key.substring(0, 7) == "FREEZE_") {
@@ -503,7 +471,7 @@ function refreshStorageListing() {
     storageListMasterDiv.removeChild(storageListMasterDivSub);
     storageListMasterDivSub = document.createElement("div");
     storageListMasterDivSub.id = "storageListingMasterContainerSub";
-    var keys = getLocalStorageKeys();
+    var keys = storage.getLocalStorageKeys();
     var blobPairs = [];
     for (var index = 0; index < keys.length; ++index) {
         blobPairs[index] = getBlobPreEncoded(keys[index]);
@@ -516,13 +484,13 @@ function refreshStorageListing() {
 }
 function getBlobPreEncoded(keyName) {
     if (keyName.substring(0, 9) == "B64_SRAM_") {
-        return [keyName.substring(4), window.atob(findValue(keyName))];
+        return [keyName.substring(4), window.atob(storage.findValue(keyName))];
     }
     else if (keyName.substring(0, 5) == "SRAM_") {
-        return [keyName, convertToBinary(findValue(keyName))];
+        return [keyName, convertToBinary(storage.findValue(keyName))];
     }
     else {
-        return [keyName, JSON.stringify(findValue(keyName))];
+        return [keyName, JSON.stringify(storage.findValue(keyName))];
     }
 }
 function outputLocalStorageRequestLink(keyName) {
@@ -547,19 +515,19 @@ function popupStorageDialog(keyName) {
     if (keyName.substring(0, 9) == "B64_SRAM_") {
         downloadDiv2 = document.createElement("div");
         downloadDiv2.id = "storagePopupDownloadRAW";
-        downloadDiv2.appendChild(outputLocalStorageLink("Download RAW save data.", findValue(keyName), keyName));
+        downloadDiv2.appendChild(outputLocalStorageLink("Download RAW save data.", storage.findValue(keyName), keyName));
         subContainer.appendChild(downloadDiv2);
-        downloadDiv.appendChild(outputLocalStorageLink("Download in import compatible format.", window.btoa(generateBlob(keyName.substring(4), window.atob(findValue(keyName)))), keyName));
+        downloadDiv.appendChild(outputLocalStorageLink("Download in import compatible format.", window.btoa(generateBlob(keyName.substring(4), window.atob(storage.findValue(keyName)))), keyName));
     }
     else if (keyName.substring(0, 5) == "SRAM_") {
         downloadDiv2 = document.createElement("div");
         downloadDiv2.id = "storagePopupDownloadRAW";
-        downloadDiv2.appendChild(outputLocalStorageLink("Download RAW save data.", window.btoa(convertToBinary(findValue(keyName))), keyName));
+        downloadDiv2.appendChild(outputLocalStorageLink("Download RAW save data.", window.btoa(convertToBinary(storage.findValue(keyName))), keyName));
         subContainer.appendChild(downloadDiv2);
-        downloadDiv.appendChild(outputLocalStorageLink("Download in import compatible format.", window.btoa(generateBlob(keyName, convertToBinary(findValue(keyName)))), keyName));
+        downloadDiv.appendChild(outputLocalStorageLink("Download in import compatible format.", window.btoa(generateBlob(keyName, convertToBinary(storage.findValue(keyName)))), keyName));
     }
     else {
-        downloadDiv.appendChild(outputLocalStorageLink("Download in import compatible format.", window.btoa(generateBlob(keyName, JSON.stringify(findValue(keyName)))), keyName));
+        downloadDiv.appendChild(outputLocalStorageLink("Download in import compatible format.", window.btoa(generateBlob(keyName, JSON.stringify(storage.findValue(keyName)))), keyName));
     }
     var deleteLink = generateLink("javascript:deleteStorageSlot(\"" + keyName + "\")", "Delete data item from HTML5 local storage.");
     deleteLink.id = "storagePopupDelete";
@@ -576,7 +544,7 @@ function convertToBinary(jsArray) {
     return binString;
 }
 function deleteStorageSlot(keyName) {
-    deleteValue(keyName);
+    storage.deleteValue(keyName);
     windowStacks[6].hide();
     refreshStorageListing();
 }
@@ -590,40 +558,4 @@ function generateDownloadLink(address, textData, keyName) {
     var link = generateLink(address, textData);
     link.download = keyName + ".sav";
     return link;
-}
-function checkStorageLength() {
-    try {
-        return window.localStorage.length;
-    }
-    catch (error) {
-        //An older Gecko 1.8.1/1.9.0 method of storage (Deprecated due to the obvious security hole):
-        return window.globalStorage[location.hostname].length;
-    }
-}
-function getLocalStorageKeys() {
-    var storageLength = checkStorageLength();
-    var keysFound = [];
-    var index = 0;
-    var nextKey = null;
-    while (index < storageLength) {
-        nextKey = findKey(index++);
-        if (nextKey !== null && nextKey.length > 0) {
-            if (nextKey.substring(0, 5) == "SRAM_" || nextKey.substring(0, 9) == "B64_SRAM_" || nextKey.substring(0, 7) == "FREEZE_" || nextKey.substring(0, 4) == "RTC_") {
-                keysFound.push(nextKey);
-            }
-        }
-        else {
-            break;
-        }
-    }
-    return keysFound;
-}
-function findKey(keyNum) {
-    try {
-        return window.localStorage.key(keyNum);
-    }
-    catch (error) {
-        //An older Gecko 1.8.1/1.9.0 method of storage (Deprecated due to the obvious security hole):
-        return window.globalStorage[location.hostname].key(keyNum);
-    }
 }
