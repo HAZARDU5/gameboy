@@ -1,3 +1,10 @@
+import PopupMenu from './gui/popupMenu';
+import windowCreate from './gui/windowCreate';
+import terminal from './terminal';
+import dom from './gui/dom';
+import io from './io';
+
+var windowStacks = [];
 var inFullscreen = false;
 var mainCanvas = null;
 var fullscreenCanvas = null;
@@ -12,8 +19,8 @@ var keyZones = [
     ["select", [16]],
     ["start", [13]]
 ];
-function windowingInitialize() {
-    cout("windowingInitialize() called.", 0);
+export default function windowingInitialize() {
+    terminal.cout("windowingInitialize() called.", 0);
     windowStacks[0] = windowCreate("GameBoy", true);
     windowStacks[1] = windowCreate("terminal", false);
     windowStacks[2] = windowCreate("about", false);
@@ -31,75 +38,77 @@ function windowingInitialize() {
         registerGUIEvents();
     }
     catch (error) {
-        cout("Fatal windowing error: \"" + error.message + "\" file:" + error.fileName + " line: " + error.lineNumber, 2);
+        terminal.cout("Fatal windowing error: \"" + error.message + "\" file:" + error.fileName + " line: " + error.lineNumber, 2);
     }
     //Update the settings to the emulator's default:
-    document.getElementById("enable_sound").checked = settings[0];
-    document.getElementById("enable_gbc_bios").checked = settings[1];
-    document.getElementById("disable_colors").checked = settings[2];
-    document.getElementById("rom_only_override").checked = settings[9];
-    document.getElementById("mbc_enable_override").checked = settings[10];
-    document.getElementById("enable_colorization").checked = settings[4];
+    document.getElementById("enable_sound").checked = io.settings[0];
+    document.getElementById("enable_gbc_bios").checked = io.settings[1];
+    document.getElementById("disable_colors").checked =io.settings[2];
+    document.getElementById("rom_only_override").checked =io.settings[9];
+    document.getElementById("mbc_enable_override").checked =io.settings[10];
+    document.getElementById("enable_colorization").checked =io.settings[4];
     document.getElementById("do_minimal").checked = showAsMinimal;
-    document.getElementById("software_resizing").checked = settings[12];
-    document.getElementById("typed_arrays_disallow").checked = settings[5];
-    document.getElementById("gb_boot_rom_utilized").checked = settings[11];
-    document.getElementById("resize_smoothing").checked = settings[13];
-    document.getElementById("channel1").checked = settings[14][0];
-    document.getElementById("channel2").checked = settings[14][1];
-    document.getElementById("channel3").checked = settings[14][2];
-    document.getElementById("channel4").checked = settings[14][3];
+    document.getElementById("software_resizing").checked =io.settings[12];
+    document.getElementById("typed_arrays_disallow").checked =io.settings[5];
+    document.getElementById("gb_boot_rom_utilized").checked =io.settings[11];
+    document.getElementById("resize_smoothing").checked =io.settings[13];
+    document.getElementById("channel1").checked =io.settings[14][0];
+    document.getElementById("channel2").checked =io.settings[14][1];
+    document.getElementById("channel3").checked =io.settings[14][2];
+    document.getElementById("channel4").checked =io.settings[14][3];
 }
+
+
 function registerGUIEvents() {
-    cout("In registerGUIEvents() : Registering GUI Events.", -1);
-    addEvent("click", document.getElementById("terminal_clear_button"), clear_terminal);
-    addEvent("click", document.getElementById("local_storage_list_refresh_button"), refreshStorageListing);
-    addEvent("click", document.getElementById("terminal_close_button"), function () {
+    terminal.cout("In registerGUIEvents() : Registering GUI Events.", -1);
+    dom.addEvent("click", document.getElementById("terminal_clear_button"), terminal.clear_terminal);
+    dom.addEvent("click", document.getElementById("local_storage_list_refresh_button"), refreshStorageListing);
+    dom.addEvent("click", document.getElementById("terminal_close_button"), function () {
         windowStacks[1].hide()
     });
-    addEvent("click", document.getElementById("about_close_button"), function () {
+    dom.addEvent("click", document.getElementById("about_close_button"), function () {
         windowStacks[2].hide()
     });
-    addEvent("click", document.getElementById("settings_close_button"), function () {
+    dom.addEvent("click", document.getElementById("settings_close_button"), function () {
         windowStacks[3].hide()
     });
-    addEvent("click", document.getElementById("input_select_close_button"), function () {
+    dom.addEvent("click", document.getElementById("input_select_close_button"), function () {
         windowStacks[4].hide()
     });
-    addEvent("click", document.getElementById("instructions_close_button"), function () {
+    dom.addEvent("click", document.getElementById("instructions_close_button"), function () {
         windowStacks[5].hide()
     });
-    addEvent("click", document.getElementById("local_storage_list_close_button"), function () {
+    dom.addEvent("click", document.getElementById("local_storage_list_close_button"), function () {
         windowStacks[7].hide()
     });
-    addEvent("click", document.getElementById("local_storage_popup_close_button"), function () {
+    dom.addEvent("click", document.getElementById("local_storage_popup_close_button"), function () {
         windowStacks[6].hide()
     });
-    addEvent("click", document.getElementById("save_importer_close_button"), function () {
+    dom.addEvent("click", document.getElementById("save_importer_close_button"), function () {
         windowStacks[9].hide()
     });
-    addEvent("click", document.getElementById("freeze_list_close_button"), function () {
+    dom.addEvent("click", document.getElementById("freeze_list_close_button"), function () {
         windowStacks[8].hide()
     });
-    addEvent("click", document.getElementById("GameBoy_about_menu"), function () {
+    dom.addEvent("click", document.getElementById("GameBoy_about_menu"), function () {
         windowStacks[2].show()
     });
-    addEvent("click", document.getElementById("GameBoy_settings_menu"), function () {
+    dom.addEvent("click", document.getElementById("GameBoy_settings_menu"), function () {
         windowStacks[3].show()
     });
-    addEvent("click", document.getElementById("local_storage_list_menu"), function () {
+    dom.addEvent("click", document.getElementById("local_storage_list_menu"), function () {
         refreshStorageListing();
         windowStacks[7].show();
     });
-    addEvent("click", document.getElementById("freeze_list_menu"), function () {
+    dom.addEvent("click", document.getElementById("freeze_list_menu"), function () {
         refreshFreezeListing();
         windowStacks[8].show();
     });
-    addEvent("click", document.getElementById("view_importer"), function () {
+    dom.addEvent("click", document.getElementById("view_importer"), function () {
         windowStacks[9].show()
     });
-    addEvent("keydown", document, keyDown);
-    addEvent("keyup", document, function (event) {
+    dom.addEvent("keydown", document, keyDown);
+    dom.addEvent("keyup", document, function (event) {
         if (event.keyCode == 27) {
             //Fullscreen on/off
             fullscreenPlayer();
@@ -109,14 +118,14 @@ function registerGUIEvents() {
             keyUp(event);
         }
     });
-    addEvent("MozOrientation", window, GameBoyGyroSignalHandler);
-    addEvent("deviceorientation", window, GameBoyGyroSignalHandler);
-    new popupMenu(document.getElementById("GameBoy_file_menu"), document.getElementById("GameBoy_file_popup"));
-    addEvent("click", document.getElementById("data_uri_clicker"), function () {
+    dom.addEvent("MozOrientation", window, io.GameBoyGyroSignalHandler);
+    dom.addEvent("deviceorientation", window, io.GameBoyGyroSignalHandler);
+    new PopupMenu(document.getElementById("GameBoy_file_menu"), document.getElementById("GameBoy_file_popup"));
+    dom.addEvent("click", document.getElementById("data_uri_clicker"), function () {
         var datauri = prompt("Please input the ROM image's Base 64 Encoded Text:", "");
         if (datauri != null && datauri.length > 0) {
             try {
-                cout(Math.floor(datauri.length * 3 / 4) + " bytes of data submitted by form (text length of " + datauri.length + ").", 0);
+                terminal.cout(Math.floor(datauri.length * 3 / 4) + " bytes of data submitted by form (text length of " + datauri.length + ").", 0);
                 initPlayer();
                 start(mainCanvas, window.atob(datauri));
             }
@@ -125,43 +134,43 @@ function registerGUIEvents() {
             }
         }
     });
-    addEvent("click", document.getElementById("set_volume"), function () {
-        if (GameBoyEmulatorInitialized()) {
+    dom.addEvent("click", document.getElementById("set_volume"), function () {
+        if (io.GameBoyEmulatorInitialized()) {
             var volume = prompt("Set the volume here:", "1.0");
             if (volume != null && volume.length > 0) {
-                settings[3] = Math.min(Math.max(parseFloat(volume), 0), 1);
+               io.settings[3] = Math.min(Math.max(parseFloat(volume), 0), 1);
                 gameboy.changeVolume();
             }
         }
     });
-    addEvent("click", document.getElementById("set_speed"), function () {
-        if (GameBoyEmulatorInitialized()) {
+    dom.addEvent("click", document.getElementById("set_speed"), function () {
+        if (io.GameBoyEmulatorInitialized()) {
             var speed = prompt("Set the emulator speed here:", "1.0");
             if (speed != null && speed.length > 0) {
                 gameboy.setSpeed(Math.max(parseFloat(speed), 0.001));
             }
         }
     });
-    addEvent("click", document.getElementById("internal_file_clicker"), function () {
+    dom.addEvent("click", document.getElementById("internal_file_clicker"), function () {
         var file_opener = document.getElementById("local_file_open");
         windowStacks[4].show();
         file_opener.click();
     });
-    addEvent("blur", document.getElementById("input_select"), function () {
+    dom.addEvent("blur", document.getElementById("input_select"), function () {
         windowStacks[4].hide();
     });
-    addEvent("change", document.getElementById("local_file_open"), function () {
+    dom.addEvent("change", document.getElementById("local_file_open"), function () {
         windowStacks[4].hide();
         if (typeof this.files != "undefined") {
             try {
                 if (this.files.length >= 1) {
-                    cout("Reading the local file \"" + this.files[0].name + "\"", 0);
+                    terminal.cout("Reading the local file \"" + this.files[0].name + "\"", 0);
                     try {
                         //Gecko 1.9.2+ (Standard Method)
                         var binaryHandle = new FileReader();
                         binaryHandle.onload = function () {
                             if (this.readyState == 2) {
-                                cout("file loaded.", 0);
+                                terminal.cout("file loaded.", 0);
                                 try {
                                     initPlayer();
                                     start(mainCanvas, this.result);
@@ -171,13 +180,13 @@ function registerGUIEvents() {
                                 }
                             }
                             else {
-                                cout("loading file, please wait...", 0);
+                                terminal.cout("loading file, please wait...", 0);
                             }
                         }
                         binaryHandle.readAsBinaryString(this.files[this.files.length - 1]);
                     }
                     catch (error) {
-                        cout("Browser does not support the FileReader object, falling back to the non-standard File object access,", 2);
+                        terminal.cout("Browser does not support the FileReader object, falling back to the non-standard File object access,", 2);
                         //Gecko 1.9.0, 1.9.1 (Non-Standard Method)
                         var romImageString = this.files[this.files.length - 1].getAsBinary();
                         try {
@@ -191,29 +200,29 @@ function registerGUIEvents() {
                     }
                 }
                 else {
-                    cout("Incorrect number of files selected for local loading.", 1);
+                    terminal.cout("Incorrect number of files selected for local loading.", 1);
                 }
             }
             catch (error) {
-                cout("Could not load in a locally stored ROM file.", 2);
+                terminal.cout("Could not load in a locally stored ROM file.", 2);
             }
         }
         else {
-            cout("could not find the handle on the file to open.", 2);
+            terminal.cout("could not find the handle on the file to open.", 2);
         }
     });
-    addEvent("change", document.getElementById("save_open"), function () {
+    dom.addEvent("change", document.getElementById("save_open"), function () {
         windowStacks[9].hide();
         if (typeof this.files != "undefined") {
             try {
                 if (this.files.length >= 1) {
-                    cout("Reading the local file \"" + this.files[0].name + "\" for importing.", 0);
+                    terminal.cout("Reading the local file \"" + this.files[0].name + "\" for importing.", 0);
                     try {
                         //Gecko 1.9.2+ (Standard Method)
                         var binaryHandle = new FileReader();
                         binaryHandle.onload = function () {
                             if (this.readyState == 2) {
-                                cout("file imported.", 0);
+                                terminal.cout("file imported.", 0);
                                 try {
                                     import_save(this.result);
                                     refreshStorageListing();
@@ -223,13 +232,13 @@ function registerGUIEvents() {
                                 }
                             }
                             else {
-                                cout("importing file, please wait...", 0);
+                                terminal.cout("importing file, please wait...", 0);
                             }
                         }
                         binaryHandle.readAsBinaryString(this.files[this.files.length - 1]);
                     }
                     catch (error) {
-                        cout("Browser does not support the FileReader object, falling back to the non-standard File object access,", 2);
+                        terminal.cout("Browser does not support the FileReader object, falling back to the non-standard File object access,", 2);
                         //Gecko 1.9.0, 1.9.1 (Non-Standard Method)
                         var romImageString = this.files[this.files.length - 1].getAsBinary();
                         try {
@@ -243,19 +252,19 @@ function registerGUIEvents() {
                     }
                 }
                 else {
-                    cout("Incorrect number of files selected for local loading.", 1);
+                    terminal.cout("Incorrect number of files selected for local loading.", 1);
                 }
             }
             catch (error) {
-                cout("Could not load in a locally stored ROM file.", 2);
+                terminal.cout("Could not load in a locally stored ROM file.", 2);
             }
         }
         else {
-            cout("could not find the handle on the file to open.", 2);
+            terminal.cout("could not find the handle on the file to open.", 2);
         }
     });
-    addEvent("click", document.getElementById("restart_cpu_clicker"), function () {
-        if (GameBoyEmulatorInitialized()) {
+    dom.addEvent("click", document.getElementById("restart_cpu_clicker"), function () {
+        if (io.GameBoyEmulatorInitialized()) {
             try {
                 if (!gameboy.fromSaveState) {
                     initPlayer();
@@ -271,87 +280,87 @@ function registerGUIEvents() {
             }
         }
         else {
-            cout("Could not restart, as a previous emulation session could not be found.", 1);
+            terminal.cout("Could not restart, as a previous emulation session could not be found.", 1);
         }
     });
-    addEvent("click", document.getElementById("run_cpu_clicker"), function () {
+    dom.addEvent("click", document.getElementById("run_cpu_clicker"), function () {
         run();
     });
-    addEvent("click", document.getElementById("kill_cpu_clicker"), function () {
+    dom.addEvent("click", document.getElementById("kill_cpu_clicker"), function () {
         pause();
     });
-    addEvent("click", document.getElementById("save_state_clicker"), function () {
+    dom.addEvent("click", document.getElementById("save_state_clicker"), function () {
         save();
     });
-    addEvent("click", document.getElementById("save_SRAM_state_clicker"), function () {
+    dom.addEvent("click", document.getElementById("save_SRAM_state_clicker"), function () {
         saveSRAM();
     });
-    addEvent("click", document.getElementById("enable_sound"), function () {
-        settings[0] = document.getElementById("enable_sound").checked;
-        if (GameBoyEmulatorInitialized()) {
+    dom.addEvent("click", document.getElementById("enable_sound"), function () {
+       io.settings[0] = document.getElementById("enable_sound").checked;
+        if (io.GameBoyEmulatorInitialized()) {
             gameboy.initSound();
         }
     });
-    addEvent("click", document.getElementById("disable_colors"), function () {
-        settings[2] = document.getElementById("disable_colors").checked;
+    dom.addEvent("click", document.getElementById("disable_colors"), function () {
+       io.settings[2] = document.getElementById("disable_colors").checked;
     });
-    addEvent("click", document.getElementById("rom_only_override"), function () {
-        settings[9] = document.getElementById("rom_only_override").checked;
+    dom.addEvent("click", document.getElementById("rom_only_override"), function () {
+       io.settings[9] = document.getElementById("rom_only_override").checked;
     });
-    addEvent("click", document.getElementById("mbc_enable_override"), function () {
-        settings[10] = document.getElementById("mbc_enable_override").checked;
+    dom.addEvent("click", document.getElementById("mbc_enable_override"), function () {
+       io.settings[10] = document.getElementById("mbc_enable_override").checked;
     });
-    addEvent("click", document.getElementById("enable_gbc_bios"), function () {
-        settings[1] = document.getElementById("enable_gbc_bios").checked;
+    dom.addEvent("click", document.getElementById("enable_gbc_bios"), function () {
+       io.settings[1] = document.getElementById("enable_gbc_bios").checked;
     });
-    addEvent("click", document.getElementById("enable_colorization"), function () {
-        settings[4] = document.getElementById("enable_colorization").checked;
+    dom.addEvent("click", document.getElementById("enable_colorization"), function () {
+       io.settings[4] = document.getElementById("enable_colorization").checked;
     });
-    addEvent("click", document.getElementById("do_minimal"), function () {
+    dom.addEvent("click", document.getElementById("do_minimal"), function () {
         showAsMinimal = document.getElementById("do_minimal").checked;
         fullscreenCanvas.className = (showAsMinimal) ? "minimum" : "maximum";
     });
-    addEvent("click", document.getElementById("software_resizing"), function () {
-        settings[12] = document.getElementById("software_resizing").checked;
-        if (GameBoyEmulatorInitialized()) {
+    dom.addEvent("click", document.getElementById("software_resizing"), function () {
+       io.settings[12] = document.getElementById("software_resizing").checked;
+        if (io.GameBoyEmulatorInitialized()) {
             gameboy.initLCD();
         }
     });
-    addEvent("click", document.getElementById("typed_arrays_disallow"), function () {
-        settings[5] = document.getElementById("typed_arrays_disallow").checked;
+    dom.addEvent("click", document.getElementById("typed_arrays_disallow"), function () {
+       io.settings[5] = document.getElementById("typed_arrays_disallow").checked;
     });
-    addEvent("click", document.getElementById("gb_boot_rom_utilized"), function () {
-        settings[11] = document.getElementById("gb_boot_rom_utilized").checked;
+    dom.addEvent("click", document.getElementById("gb_boot_rom_utilized"), function () {
+       io.settings[11] = document.getElementById("gb_boot_rom_utilized").checked;
     });
-    addEvent("click", document.getElementById("resize_smoothing"), function () {
-        settings[13] = document.getElementById("resize_smoothing").checked;
-        if (GameBoyEmulatorInitialized()) {
+    dom.addEvent("click", document.getElementById("resize_smoothing"), function () {
+       io.settings[13] = document.getElementById("resize_smoothing").checked;
+        if (io.GameBoyEmulatorInitialized()) {
             gameboy.initLCD();
         }
     });
-    addEvent("click", document.getElementById("channel1"), function () {
-        settings[14][0] = document.getElementById("channel1").checked;
+    dom.addEvent("click", document.getElementById("channel1"), function () {
+       io.settings[14][0] = document.getElementById("channel1").checked;
     });
-    addEvent("click", document.getElementById("channel2"), function () {
-        settings[14][1] = document.getElementById("channel2").checked;
+    dom.addEvent("click", document.getElementById("channel2"), function () {
+       io.settings[14][1] = document.getElementById("channel2").checked;
     });
-    addEvent("click", document.getElementById("channel3"), function () {
-        settings[14][2] = document.getElementById("channel3").checked;
+    dom.addEvent("click", document.getElementById("channel3"), function () {
+       io.settings[14][2] = document.getElementById("channel3").checked;
     });
-    addEvent("click", document.getElementById("channel4"), function () {
-        settings[14][3] = document.getElementById("channel4").checked;
+    dom.addEvent("click", document.getElementById("channel4"), function () {
+       io.settings[14][3] = document.getElementById("channel4").checked;
     });
-    addEvent("click", document.getElementById("view_fullscreen"), fullscreenPlayer);
-    new popupMenu(document.getElementById("GameBoy_view_menu"), document.getElementById("GameBoy_view_popup"));
-    addEvent("click", document.getElementById("view_terminal"), function () {
+    dom.addEvent("click", document.getElementById("view_fullscreen"), fullscreenPlayer);
+    new PopupMenu(document.getElementById("GameBoy_view_menu"), document.getElementById("GameBoy_view_popup"));
+    dom.addEvent("click", document.getElementById("view_terminal"), function () {
         windowStacks[1].show()
     });
-    addEvent("click", document.getElementById("view_instructions"), function () {
+    dom.addEvent("click", document.getElementById("view_instructions"), function () {
         windowStacks[5].show()
     });
-    addEvent("mouseup", document.getElementById("gfx"), initNewCanvasSize);
-    addEvent("resize", window, initNewCanvasSize);
-    addEvent("unload", window, function () {
+    dom.addEvent("mouseup", document.getElementById("gfx"), io.initNewCanvasSize);
+    dom.addEvent("resize", window, io.initNewCanvasSize);
+    dom.addEvent("unload", window, function () {
         autoSave();
     });
 }
@@ -399,7 +408,7 @@ function initPlayer() {
     document.getElementById("fullscreenContainer").style.display = "none";
 }
 function fullscreenPlayer() {
-    if (GameBoyEmulatorInitialized()) {
+    if (io.GameBoyEmulatorInitialized()) {
         if (!inFullscreen) {
             gameboy.canvas = fullscreenCanvas;
             fullscreenCanvas.className = (showAsMinimal) ? "minimum" : "maximum";
@@ -415,7 +424,7 @@ function fullscreenPlayer() {
         inFullscreen = !inFullscreen;
     }
     else {
-        cout("Cannot go into fullscreen mode.", 2);
+        terminal.cout("Cannot go into fullscreen mode.", 2);
     }
 }
 function runFreeze(keyName) {
@@ -425,7 +434,7 @@ function runFreeze(keyName) {
         openState(keyName, mainCanvas);
     }
     catch (error) {
-        cout("A problem with attempting to open the selected save state occurred.", 2);
+        terminal.cout("A problem with attempting to open the selected save state occurred.", 2);
     }
 }
 //Wrapper for localStorage getItem, so that data can be retrieved in various types.
@@ -616,76 +625,5 @@ function findKey(keyNum) {
     catch (error) {
         //An older Gecko 1.8.1/1.9.0 method of storage (Deprecated due to the obvious security hole):
         return window.globalStorage[location.hostname].key(keyNum);
-    }
-}
-//Some wrappers and extensions for non-DOM3 browsers:
-function isDescendantOf(ParentElement, toCheck) {
-    if (!ParentElement || !toCheck) {
-        return false;
-    }
-    //Verify an object as either a direct or indirect child to another object.
-    function traverseTree(domElement) {
-        while (domElement != null) {
-            if (domElement.nodeType == 1) {
-                if (isSameNode(domElement, toCheck)) {
-                    return true;
-                }
-                if (hasChildNodes(domElement)) {
-                    if (traverseTree(domElement.firstChild)) {
-                        return true;
-                    }
-                }
-            }
-            domElement = domElement.nextSibling;
-        }
-        return false;
-    }
-
-    return traverseTree(ParentElement.firstChild);
-}
-function hasChildNodes(oElement) {
-    return (typeof oElement.hasChildNodes == "function") ? oElement.hasChildNodes() : ((oElement.firstChild != null));
-}
-function isSameNode(oCheck1, oCheck2) {
-    return (typeof oCheck1.isSameNode == "function") ? oCheck1.isSameNode(oCheck2) : (oCheck1 === oCheck2);
-}
-function pageXCoord(event) {
-    if (typeof event.pageX == "undefined") {
-        return event.clientX + document.documentElement.scrollLeft;
-    }
-    return event.pageX;
-}
-function pageYCoord(event) {
-    if (typeof event.pageY == "undefined") {
-        return event.clientY + document.documentElement.scrollTop;
-    }
-    return event.pageY;
-}
-function mouseLeaveVerify(oElement, event) {
-    //Hook target element with onmouseout and use this function to verify onmouseleave.
-    return isDescendantOf(oElement, (typeof event.target != "undefined") ? event.target : event.srcElement) && !isDescendantOf(oElement, (typeof event.relatedTarget != "undefined") ? event.relatedTarget : event.toElement);
-}
-function mouseEnterVerify(oElement, event) {
-    //Hook target element with onmouseover and use this function to verify onmouseenter.
-    return !isDescendantOf(oElement, (typeof event.target != "undefined") ? event.target : event.srcElement) && isDescendantOf(oElement, (typeof event.relatedTarget != "undefined") ? event.relatedTarget : event.fromElement);
-}
-function addEvent(sEvent, oElement, fListener) {
-    try {
-        oElement.addEventListener(sEvent, fListener, false);
-        cout("In addEvent() : Standard addEventListener() called to add a(n) \"" + sEvent + "\" event.", -1);
-    }
-    catch (error) {
-        oElement.attachEvent("on" + sEvent, fListener);	//Pity for IE.
-        cout("In addEvent() : Nonstandard attachEvent() called to add an \"on" + sEvent + "\" event.", -1);
-    }
-}
-function removeEvent(sEvent, oElement, fListener) {
-    try {
-        oElement.removeEventListener(sEvent, fListener, false);
-        cout("In removeEvent() : Standard removeEventListener() called to remove a(n) \"" + sEvent + "\" event.", -1);
-    }
-    catch (error) {
-        oElement.detachEvent("on" + sEvent, fListener);	//Pity for IE.
-        cout("In removeEvent() : Nonstandard detachEvent() called to remove an \"on" + sEvent + "\" event.", -1);
     }
 }
