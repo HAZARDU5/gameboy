@@ -5,7 +5,10 @@
   "main": "index.js",
   "scripts": {
     "start": "budo --live --verbose --port 3000 --open",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "deploy": "ghpages",
+    "ghpages": "npm run dist && ./node_modules/.bin/gh-pages -d _dist -b gh-pages",
+    "dist": "mkdir _dist; cp -R js _dist && cp -R css _dist && cp index.html _dist"
   },
   "repository": {
     "type": "git",
@@ -18,6 +21,7 @@
   },
   "homepage": "https://github.com/afonsof/gameboy#readme",
   "devDependencies": {
-    "budo": "^10.0.3"
+    "budo": "^10.0.3",
+    "ghpages": "0.0.10"
   }
 }
