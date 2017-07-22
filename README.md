@@ -1,9 +1,23 @@
-JavaScript GameBoy Color Emulator
-=================================
+JavaScript GameBoy Color Emulator for WebVR
+===========================================
 
 **Copyright (C) 2010 - 2016 Grant Galitz**
 
+**WebVR components are Copyright (C) 2017 Michael Andrew and their respective authors**
+
 A GameBoy Color emulator that utilizes HTML5 canvas and JavaScript audio APIs to provide a full emulation of the console.
+
+Controls
+--------
+
+* A = z
+* B = x
+* START = Enter
+* Select = Shift
+* Left = J
+* Up = I
+* Right = L
+* Down = K
 
 Known browsers to work well in:
 -------------------------------
@@ -40,3 +54,13 @@ CPU instruction set accuracy test results (Blargg's cpu_instrs.gb test ROM):
 * **Gambatte:**
 
 	![Gambatte](http://i.imgur.com/vGHFz.png "Passes")
+
+ROM Licences
+------------
+
+## Geometrix ##
+
+This game is licensed under the GPL v3 license. You may have received the source code of this game along with the ROM
+file. If not, the source code is freely available at the following address:
+
+https://github.com/AntonioND/geometrix
