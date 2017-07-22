@@ -1,19 +1,23 @@
 {
-  "name": "gameboy-hd",
+  "name": "aframe-gameboy",
   "version": "1.0.0",
-  "description": "JavaScript GameBoy Color Emulator",
+  "description": "JavaScript GameBoy Emulator for WebVR",
   "main": "index.js",
   "scripts": {
+    "start": "budo --live --verbose --port 3000 --open",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/afonsof/gameboy-hd.git"
+    "url": "git+https://github.com/hazardu5/gameboy.git"
   },
-  "author": "",
-  "license": "ISC",
+  "author": "Michael Andrew, Afonso F, Grant Galitz",
+  "license": "MIT",
   "bugs": {
-    "url": "https://github.com/afonsof/gameboy-hd/issues"
+    "url": "https://github.com/hazardu5/gameboy/issues"
   },
-  "homepage": "https://github.com/afonsof/gameboy-hd#readme"
+  "homepage": "https://github.com/afonsof/gameboy#readme",
+  "devDependencies": {
+    "budo": "^10.0.3"
+  }
 }
