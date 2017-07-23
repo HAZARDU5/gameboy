@@ -14,7 +14,7 @@ AFRAME.registerSystem('main', {
 
         var scene = document.querySelector('a-scene');
         var mainCanvas = document.getElementById("mainCanvas");
-        var cursorEl = document.getElementById("my-cursor");
+        this.cursorEl = document.getElementById("my-cursor");
         this.gameboy = document.getElementById("gameboy");
         this.gameboyCollider = document.querySelector("#gameboy .collider");
 
@@ -46,7 +46,7 @@ AFRAME.registerSystem('main', {
             };
             client.send();
 
-            var colliderEls = AFRAME.utils.styleParser.parse(cursorEl.getAttribute('sphere-collider')).objects.split(',');
+            var colliderEls = AFRAME.utils.styleParser.parse(self.cursorEl.getAttribute('sphere-collider')).objects.split(',');
 
             //console.log('Els: ',colliderEls)
 
@@ -58,6 +58,7 @@ AFRAME.registerSystem('main', {
                     //console.log('hit', e.target);
 
                     var targetEl = (e.target.parentNode !== self.el.sceneEl) ? e.target.parentNode : e.target;
+                    self.cursorEl.setAttribute('material','opacity',0);
 
                     //console.log(targetEl);
 
@@ -137,6 +138,7 @@ AFRAME.registerSystem('main', {
 
         entity.removeAttribute('follow');
         entity.removeAttribute('look-at');
+        this.cursorEl.setAttribute('material','opacity',1);
         colliderEl.classList.remove('ignore-ray');
     },
 

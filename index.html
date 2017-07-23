@@ -59,6 +59,9 @@
     <script type="text/javascript" src="js/other/resize.js"></script>
     <script type="text/javascript" src="js/GameBoyCore.js"></script>
     <script type="text/javascript" src="js/GameBoyIO.js"></script>
+    <script>
+        settings[2] = true; //force gb mode
+    </script>
 
     <script src="assets/js/main.js"></script>
 </head>
@@ -75,13 +78,14 @@
         <a-entity hand-controls="right" teleport-controls="collisionEntities:#collision-floor"></a-entity>
     </a-locomotor>-->
 
-    <a-entity id="room" class="ignore-ray" obj-model="obj: #family-room-obj; mtl: #family-room-mtl" scale="4 4 4"></a-entity>
+    <a-entity id="room" class="ignore-ray" obj-model="obj: #family-room-obj; mtl: #family-room-mtl" position="0 3.5 0" scale="4 4 4">
+        <a-box id="collision-table" static-body position="-0.174 -0.276 -0.786" depth="0.500" height="0.060" width="1.170" material="opacity:0"></a-box>
+        <a-box id="collision-floor" static-body position="-0.083 -0.803 -0.565" depth="2.380" height="0.470" width="2.900" material="opacity:0"></a-box>
+    </a-entity>
 
-    <a-box id="collision-table" static-body position="-0.680 -1.071 -3.103" depth="2.080" height="0.160" width="4.740" material="opacity:0"></a-box>
 
-    <a-box id="collision-floor" static-body position="-0.319 -2.758 -2.223" depth="9.710" height="0.840" width="11.790" material="opacity:0"></a-box>
 
-    <a-entity id="gameboy" grabbable class="ignore-ray"  position="0 0 -3.078" rotation="0 0 0" dynamic-body obj-model="obj: #gameboy-obj; mtl: #gameboy-mtl">
+    <a-entity id="gameboy" grabbable class="ignore-ray"  position="-0.399 2 -2.332" rotation="0 0 0" dynamic-body="mass: 50; shape: box;" obj-model="obj: #gameboy-obj; mtl: #gameboy-mtl">
         <a-plane id="game-screen" class="ignore-ray" position="-0.005 0.052 -0.156" rotation="-90 1 0" material="shader: html; target: #mainCanvas; fps: 60;" width="0.12" height="0.12"></a-plane>
         <a-box id="collision-gameboy" class="collider" position="0 0.007 -0.063" depth="0.390" height="0.090" width="0.220" material="opacity:0"></a-box>
     </a-entity>
@@ -93,7 +97,7 @@
         </a-entity>-->
 
     <a-ring id="my-cursor" radius-inner="0.05" radius-outer="0.1" sphere-collider="objects:#collision-gameboy; watch: false;"></a-ring>
-    <a-camera id="camera" raycaster universal-controls crawling-cursor="target: #my-cursor">
+    <a-camera id="camera" position="-0.418 1.600 -2.231" raycaster universal-controls crawling-cursor="target: #my-cursor">
 
     </a-camera>
 </a-scene>
