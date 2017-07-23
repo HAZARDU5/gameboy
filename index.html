@@ -23,7 +23,8 @@
     <script src="https://unpkg.com/@gladeye/aframe-preloader-component@1.0.2/dist/aframe-preloader-component.min.js"></script>
     <script src="https://unpkg.com/aframe-html-shader@0.2.0/dist/aframe-html-shader.min.js"></script>
     <script src="https://cdn.rawgit.com/zcanter/aframe-gradient-sky/master/dist/gradientsky.min.js"></script>
-    <script src="https://unpkg.com/aframe-crawling-cursor@1.0.7/dist/aframe-crawling-cursor.min.js"></script>
+    <script src="https://unpkg.com/aframe-crawling-cursor@1.0.7/dist/aframe-crawling-cursor.js"></script>
+    <script src="https://cdn.rawgit.com/fernandojsg/aframe-teleport-controls/master/dist/aframe-teleport-controls.min.js"></script>
 
     <script type="text/javascript">
         var DEBUG_MESSAGES = false;
@@ -66,27 +67,30 @@
         <a-asset-item id="family-room-obj" src="assets/obj/family-room/model.obj"></a-asset-item>
         <a-asset-item id="family-room-mtl" src="assets/obj/family-room/materials.mtl"></a-asset-item>
     </a-assets>
-    <a-locomotor>
-        <!-- Make sure your super-hands entities also have controller and collider components -->
-        <a-entity hand-controls="left" super-hands sphere-collider="objects: a-box"></a-entity>
-        <a-entity hand-controls="right" super-hands sphere-collider="objects: a-box"></a-entity>
-    </a-locomotor>
+    <!--<a-locomotor>
+        <a-entity hand-controls="left" super-hands="stretchStartButtons:''; stretchEndButtons:'';" sphere-collider="objects:#gameboy"></a-entity>
+        <a-entity hand-controls="right" teleport-controls="collisionEntities:#collision-floor"></a-entity>
+    </a-locomotor>-->
 
     <a-entity id="room" class="ignore-ray" obj-model="obj: #family-room-obj; mtl: #family-room-mtl" scale="4 4 4"></a-entity>
 
-    <a-box id="collision-table" static-body depth="2.080" position="-0.680 -1.071 -3.103" height="0.160" width="4.740" material="opacity:0"></a-box>
+    <a-box id="collision-table" static-body position="-0.680 -1.071 -3.103" depth="2.080" height="0.160" width="4.740" material="opacity:0"></a-box>
+
+    <a-box id="collision-floor" static-body position="-0.319 -2.758 -2.223" depth="9.710" height="0.840" width="11.790" material="opacity:0"></a-box>
 
     <a-entity id="gameboy" grabbable  position="0 0 -3.078" rotation="0 0 0" dynamic-body obj-model="obj: #gameboy-obj; mtl: #gameboy-mtl">
-        <a-plane id="game-screen" position="0 0.052 -0.140" rotation="-90 0 0" material="shader: html; target: #mainCanvas; fps: 60;" width="0.12" height="0.12"></a-plane>
+        <a-plane id="game-screen" class="ignore-ray" position="-0.005 0.052 -0.156" rotation="-90 1 0" material="shader: html; target: #mainCanvas; fps: 60;" width="0.12" height="0.12"></a-plane>
     </a-entity>
 
-    <a-gradient-sky material="shader: gradient; topColor: 255 0 0; bottomColor: 0 121 255;"></a-gradient-sky>
+    <a-gradient-sky material="shader: gradient; topColor: 255 0 0; bottomColor: 0 121 255;" class="ignore-ray"></a-gradient-sky>
+
+    <!--<a-entity id="gameboy2" class="ignore-ray"  position="0 -0.2 -0.2" rotation="90 0 0" obj-model="obj: #gameboy-obj; mtl: #gameboy-mtl" material="shader: flat;">
+            <a-plane id="game-screen2" class="ignore-ray" position="-0.005 0.052 -0.156" rotation="-90 1 0" material="shader: html; target: #mainCanvas; fps: 60;" width="0.12" height="0.12"></a-plane>
+        </a-entity>-->
 
     <a-ring id="my-cursor" radius-inner="0.05" radius-outer="0.1"></a-ring>
     <a-camera raycaster crawling-cursor="target: #my-cursor">
-        <a-entity id="gameboy2" class="ignore-ray"  position="0 -0.2 -0.2" rotation="90 0 0" obj-model="obj: #gameboy-obj; mtl: #gameboy-mtl" material="shader: flat;">
-            <a-plane id="game-screen2" class="ignore-ray" position="-0.005 0.052 -0.156" rotation="-90 1 0" material="shader: html; target: #mainCanvas; fps: 60;" width="0.12" height="0.12"></a-plane>
-        </a-entity>
+
     </a-camera>
 </a-scene>
 <div style="width: 100%; height: 100%; position: fixed; left: 0; top: 0; z-index: -1; overflow: hidden">
