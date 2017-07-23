@@ -25,6 +25,7 @@
     <script src="https://cdn.rawgit.com/fernandojsg/aframe-teleport-controls/master/dist/aframe-teleport-controls.min.js"></script>
     <script src="https://cdn.rawgit.com/ngokevin/kframe/master/components/look-at/dist/aframe-look-at-component.js"></script>
 
+    <script src="assets/js/components/auto-fall-respawn.js"></script>
     <script src="assets/js/components/follow.js"></script>
 
     <!-- Gameboy Online Scripts -->
@@ -87,7 +88,7 @@
 
 
 
-    <a-entity id="gameboy" grabbable class="ignore-ray"  position="-0.399 2 -2.332" rotation="0 0 0" dynamic-body="mass: 50; shape: box;" obj-model="obj: #gameboy-obj; mtl: #gameboy-mtl">
+    <a-entity id="gameboy" grabbable auto-fall-respawn="fallHeight: -10; respawnPosition: -0.399 3 -2.332" class="ignore-ray" position="-0.399 2 -2.332" rotation="0 0 0" dynamic-body="mass: 50; shape: box;" obj-model="obj: #gameboy-obj; mtl: #gameboy-mtl">
         <a-plane id="game-screen" class="ignore-ray" position="-0.005 0.052 -0.156" rotation="-90 1 0" material="shader: html; target: #mainCanvas; fps: 60;" width="0.12" height="0.12"></a-plane>
         <a-box id="collision-gameboy" class="collider" position="0 0.007 -0.063" depth="0.390" height="0.090" width="0.220" material="opacity:0"></a-box>
     </a-entity>
