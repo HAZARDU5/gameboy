@@ -89,7 +89,7 @@
             <a-plane id="game-screen2" class="ignore-ray" position="-0.005 0.052 -0.156" rotation="-90 1 0" material="shader: html; target: #mainCanvas; fps: 60;" width="0.12" height="0.12"></a-plane>
         </a-entity>-->
 
-    <a-ring id="my-cursor" radius-inner="0.05" radius-outer="0.1"></a-ring>
+    <a-ring id="my-cursor" radius-inner="0.05" radius-outer="0.1" sphere-collider="objects:#collision-gameboy"></a-ring>
     <a-camera raycaster crawling-cursor="target: #my-cursor">
 
     </a-camera>
