@@ -4,18 +4,16 @@
     <meta charset="UTF-8">
     <title>Virtual Gameboy</title>
 
-    <style>
-        #GameBoy{
-            display: none;
-        }
-    </style>
-
     <!-- Bootstrap Bootswatch theme CSS - other themes available here: https://bootswatch.com -->
     <link rel="stylesheet" href="https://cdn.rawgit.com/thomaspark/bootswatch/gh-pages/slate/bootstrap.min.css" />
+
+    <link rel="stylesheet" href="assets/css/style.css" />
 
     <!-- Bootstrap JS Dependencies -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js" integrity="sha384-nvAa0+6Qg9clwYCGGPpDQLVpLNn0fRaROjHqs13t4Ggj3Ez50XnGQqc/r8MhnRDZ" crossorigin="anonymous"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+    <!-- A-Frame Scripts -->
 
     <script src="https://aframe.io/releases/0.6.1/aframe.min.js"></script>
     <script src="//cdn.rawgit.com/donmccurdy/aframe-extras/v3.8.6/dist/aframe-extras.min.js"></script>
@@ -25,6 +23,11 @@
     <script src="https://cdn.rawgit.com/zcanter/aframe-gradient-sky/master/dist/gradientsky.min.js"></script>
     <script src="https://unpkg.com/aframe-crawling-cursor@1.0.7/dist/aframe-crawling-cursor.js"></script>
     <script src="https://cdn.rawgit.com/fernandojsg/aframe-teleport-controls/master/dist/aframe-teleport-controls.min.js"></script>
+    <script src="https://cdn.rawgit.com/ngokevin/kframe/master/components/look-at/dist/aframe-look-at-component.js"></script>
+
+    <script src="assets/js/components/follow.js"></script>
+
+    <!-- Gameboy Online Scripts -->
 
     <script type="text/javascript">
         var DEBUG_MESSAGES = false;
@@ -60,7 +63,7 @@
     <script src="assets/js/main.js"></script>
 </head>
 <body>
-<a-scene main physics>
+<a-scene main physics debug>
     <a-assets>
         <a-asset-item id="gameboy-obj" src="assets/obj/gameboy/model.obj"></a-asset-item>
         <a-asset-item id="gameboy-mtl" src="assets/obj/gameboy/materials.mtl"></a-asset-item>
@@ -80,7 +83,7 @@
 
     <a-entity id="gameboy" grabbable class="ignore-ray"  position="0 0 -3.078" rotation="0 0 0" dynamic-body obj-model="obj: #gameboy-obj; mtl: #gameboy-mtl">
         <a-plane id="game-screen" class="ignore-ray" position="-0.005 0.052 -0.156" rotation="-90 1 0" material="shader: html; target: #mainCanvas; fps: 60;" width="0.12" height="0.12"></a-plane>
-        <a-box id="collision-gameboy" position="0 0.007 -0.063" depth="0.390" height="0.090" width="0.220" material="opacity:0"></a-box>
+        <a-box id="collision-gameboy" class="collider" position="0 0.007 -0.063" depth="0.390" height="0.090" width="0.220" material="opacity:0"></a-box>
     </a-entity>
 
     <a-gradient-sky material="shader: gradient; topColor: 255 0 0; bottomColor: 0 121 255;" class="ignore-ray"></a-gradient-sky>
@@ -89,8 +92,8 @@
             <a-plane id="game-screen2" class="ignore-ray" position="-0.005 0.052 -0.156" rotation="-90 1 0" material="shader: html; target: #mainCanvas; fps: 60;" width="0.12" height="0.12"></a-plane>
         </a-entity>-->
 
-    <a-ring id="my-cursor" radius-inner="0.05" radius-outer="0.1" sphere-collider="objects:#collision-gameboy"></a-ring>
-    <a-camera raycaster crawling-cursor="target: #my-cursor">
+    <a-ring id="my-cursor" radius-inner="0.05" radius-outer="0.1" sphere-collider="objects:#collision-gameboy; watch: false;"></a-ring>
+    <a-camera id="camera" raycaster universal-controls crawling-cursor="target: #my-cursor">
 
     </a-camera>
 </a-scene>
