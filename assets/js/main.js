@@ -64,6 +64,12 @@ AFRAME.registerSystem('main', {
 
                     //if(targetEl.object3D){
                         self.targettedEntity = targetEl.getAttribute('id');
+
+                    /*if(self.targettedEntity === 'gameboy'){
+                        self.cursorEl.setAttribute('material','opacity',0.5);
+                    }else{
+                        self.cursorEl.setAttribute('material','opacity',1);
+                    }*/
                     //}
 
                     //console.log('Targetted: ',self.targettedEntity);
@@ -143,7 +149,7 @@ AFRAME.registerSystem('main', {
 
         entity.removeAttribute('follow');
         entity.removeAttribute('look-at');
-        this.cursorEl.setAttribute('material','opacity',1);
+        this.cursorEl.setAttribute('material','opacity',0.5);
         colliderEl.classList.remove('ignore-ray');
     },
 
