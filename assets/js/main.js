@@ -9,14 +9,15 @@ AFRAME.registerSystem('main', {
 
         var scene = document.querySelector('a-scene');
         var mainCanvas = document.getElementById("mainCanvas");
+        var gameboy = document.getElementById("collision-gameboy");
 
         scene.addEventListener('loaded',function(){
 
 
 
             var client = new XMLHttpRequest();
-            client.open('GET', 'assets/roms/pd/geometrix/geometrix.gbc.base64.txt');
-            //client.open('GET', 'assets/roms/commercial/super-mario-land/super-mario-land.gb.base64.txt');
+            //client.open('GET', 'assets/roms/pd/geometrix/geometrix.gbc.base64.txt');
+            client.open('GET', 'assets/roms/commercial/super-mario-land/super-mario-land.gb.base64.txt');
             client.onreadystatechange = function() {
 
                 var datauri = client.responseText;
@@ -42,6 +43,10 @@ AFRAME.registerSystem('main', {
 
 
         }.bind(this));
+
+        gameboy.addEventListener('hit',function(e){
+            console.log('Hit gameboy');
+        })
     },
 
     tick: function (t, dt) {
