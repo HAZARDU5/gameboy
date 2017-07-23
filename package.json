@@ -8,7 +8,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "deploy": "npm run ghpages",
     "ghpages": "npm run dist && ./node_modules/.bin/gh-pages -d _dist -b gh-pages",
-    "dist": "mkdir _dist; cp -R js _dist && cp -R assets _dist && cp -R css _dist && cp index.html _dist"
+    "dist": "mkdir _dist; cp -R js _dist && rsync -a --progress assets _dist --exclude commercial && cp -R css _dist && cp index.html _dist"
   },
   "repository": {
     "type": "git",
