@@ -23,8 +23,8 @@ AFRAME.registerSystem('main', {
 
 
             var client = new XMLHttpRequest();
-            client.open('GET', 'assets/roms/pd/geometrix/geometrix.gbc.base64.txt');
-            //client.open('GET', 'assets/roms/commercial/super-mario-land/super-mario-land.gb.base64.txt');
+            //client.open('GET', 'assets/roms/pd/geometrix/geometrix.gbc.base64.txt');
+            client.open('GET', 'assets/roms/commercial/super-mario-land/super-mario-land.gb.base64.txt');
             client.onreadystatechange = function() {
 
                 var datauri = client.responseText;
@@ -58,7 +58,7 @@ AFRAME.registerSystem('main', {
                     //console.log('hit', e.target);
 
                     var targetEl = (e.target.parentNode !== self.el.sceneEl) ? e.target.parentNode : e.target;
-                    self.cursorEl.setAttribute('material','opacity',0);
+
 
                     //console.log(targetEl);
 
@@ -109,6 +109,11 @@ AFRAME.registerSystem('main', {
     entityFollowCursor: function(id,entity,colliderEl){
         //if(this.followingEntity !== id){
             //console.log(id+' is now following cursor');
+
+            if(id === 'gameboy'){
+                this.cursorEl.setAttribute('material','opacity',0);
+            }
+
             this.followingEntity = id;
             this.entityOriginalAttrs[id] = {
                 'grabbable': entity.getAttribute('grabbable'),
