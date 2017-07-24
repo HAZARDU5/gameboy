@@ -24,6 +24,7 @@
     <script src="https://unpkg.com/aframe-crawling-cursor@1.0.7/dist/aframe-crawling-cursor.js"></script>
     <script src="https://cdn.rawgit.com/fernandojsg/aframe-teleport-controls/master/dist/aframe-teleport-controls.min.js"></script>
     <script src="https://cdn.rawgit.com/ngokevin/kframe/master/components/look-at/dist/aframe-look-at-component.js"></script>
+    <script src="https://unpkg.com/aframe-lerp-component/dist/aframe-lerp-component.min.js"></script>
 
     <script src="assets/js/components/auto-fall-respawn.js"></script>
     <script src="assets/js/components/gladeye-jump-ability.js"></script>
@@ -109,7 +110,7 @@
             <a-plane id="game-screen2" class="ignore-ray" position="-0.005 0.052 -0.156" rotation="-90 1 0" material="shader: html; target: #mainCanvas; fps: 60;" width="0.12" height="0.12"></a-plane>
         </a-entity>-->
 
-    <a-ring id="my-cursor" radius-inner="0.05" radius-outer="0.1" sphere-collider="objects:#collision-gameboy; watch: false;"></a-ring>
+    <a-ring id="my-cursor" radius-inner="0.05" radius-outer="0.1" sphere-collider="objects:#collision-gameboy; watch: false;" lerp="duration: 25; properties: position, rotation"></a-ring>
     <a-entity id="camera" camera position="-0.418 10 -2.231" kinematic-body="radius: 0.5; enableSlopes: false;" auto-fall-respawn="fallHeight: -50; respawnPosition: -0.418 10 -2.231;" gladeye-jump-ability="maxJumps: 2; soundJump: #jump0-sound, #jump1-sound; soundLand: #hurt0-sound, #hurt1-sound; soundFalling: #falling1-sound, #falling2-sound, #falling3-sound, #falling4-sound;" raycaster universal-controls crawling-cursor="target: #my-cursor">
 
     </a-entity>
