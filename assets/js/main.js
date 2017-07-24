@@ -58,12 +58,18 @@ AFRAME.registerSystem('main', {
                     //console.log('hit', e.target);
 
                     var targetEl = (e.target.parentNode !== self.el.sceneEl) ? e.target.parentNode : e.target;
-                    self.cursorEl.setAttribute('material','opacity',0);
+
 
                     //console.log(targetEl);
 
                     //if(targetEl.object3D){
                         self.targettedEntity = targetEl.getAttribute('id');
+
+                    /*if(self.targettedEntity === 'gameboy'){
+                        self.cursorEl.setAttribute('material','opacity',0.5);
+                    }else{
+                        self.cursorEl.setAttribute('material','opacity',1);
+                    }*/
                     //}
 
                     //console.log('Targetted: ',self.targettedEntity);
@@ -71,6 +77,11 @@ AFRAME.registerSystem('main', {
             }
 
 
+        }.bind(this));
+
+        this.gameboy.addEventListener('respawned',function(){
+            //reset gameboy orientation
+            console.log('Gameboy respawned');
         }.bind(this));
 
         window.addEventListener('mouseup',function(e){
@@ -109,6 +120,11 @@ AFRAME.registerSystem('main', {
     entityFollowCursor: function(id,entity,colliderEl){
         //if(this.followingEntity !== id){
             //console.log(id+' is now following cursor');
+
+            if(id === 'gameboy'){
+                this.cursorEl.setAttribute('material','opacity',0);
+            }
+
             this.followingEntity = id;
             this.entityOriginalAttrs[id] = {
                 'grabbable': entity.getAttribute('grabbable'),
@@ -138,7 +154,7 @@ AFRAME.registerSystem('main', {
 
         entity.removeAttribute('follow');
         entity.removeAttribute('look-at');
-        this.cursorEl.setAttribute('material','opacity',1);
+        this.cursorEl.setAttribute('material','opacity',0.5);
         colliderEl.classList.remove('ignore-ray');
     },
 

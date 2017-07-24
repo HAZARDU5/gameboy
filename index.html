@@ -25,6 +25,7 @@
     <script src="https://cdn.rawgit.com/fernandojsg/aframe-teleport-controls/master/dist/aframe-teleport-controls.min.js"></script>
     <script src="https://cdn.rawgit.com/ngokevin/kframe/master/components/look-at/dist/aframe-look-at-component.js"></script>
 
+    <script src="assets/js/components/auto-fall-respawn.js"></script>
     <script src="assets/js/components/follow.js"></script>
 
     <!-- Gameboy Online Scripts -->
@@ -81,11 +82,13 @@
     <a-entity id="room" class="ignore-ray" obj-model="obj: #family-room-obj; mtl: #family-room-mtl" position="0 3.5 0" scale="4 4 4">
         <a-box id="collision-table" static-body position="-0.174 -0.276 -0.786" depth="0.500" height="0.060" width="1.170" material="opacity:0"></a-box>
         <a-box id="collision-floor" static-body position="-0.083 -0.803 -0.565" depth="2.380" height="0.470" width="2.900" material="opacity:0"></a-box>
+        <a-box id="collision-couch" static-body position="-0.169 -0.398 0.116" geometry="depth:0.61;height:0.18;width:1.53" material="opacity:0"></a-box>
+        <a-box id="collision-wall1" static-body position="-1.607 0.046 -0.556" geometry="depth:2.4000000000000004;height:1.9;width:0.13999999999999996" material="opacity:0"></a-box>
     </a-entity>
 
 
 
-    <a-entity id="gameboy" grabbable class="ignore-ray"  position="-0.399 2 -2.332" rotation="0 0 0" dynamic-body="mass: 50; shape: box;" obj-model="obj: #gameboy-obj; mtl: #gameboy-mtl">
+    <a-entity id="gameboy" grabbable auto-fall-respawn="fallHeight: -10; respawnPosition: -0.399 3 -2.332; respawnRotation: 0 0 0" class="ignore-ray" position="-0.399 2 -2.332" rotation="0 0 0" dynamic-body="mass: 50; shape: box;" obj-model="obj: #gameboy-obj; mtl: #gameboy-mtl">
         <a-plane id="game-screen" class="ignore-ray" position="-0.005 0.052 -0.156" rotation="-90 1 0" material="shader: html; target: #mainCanvas; fps: 60;" width="0.12" height="0.12"></a-plane>
         <a-box id="collision-gameboy" class="collider" position="0 0.007 -0.063" depth="0.390" height="0.090" width="0.220" material="opacity:0"></a-box>
     </a-entity>
