@@ -79,6 +79,11 @@ AFRAME.registerSystem('main', {
 
         }.bind(this));
 
+        this.gameboy.addEventListener('respawned',function(){
+            //reset gameboy orientation
+            console.log('Gameboy respawned');
+        }.bind(this));
+
         window.addEventListener('mouseup',function(e){
 
             //console.log('clicked: ',this.targettedEntity);
