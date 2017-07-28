@@ -4,6 +4,7 @@ AFRAME.registerSystem('main', {
     followingEntity: '', //ID of entity currently following the cursor
     entityOriginalAttrs: {}, //attributes of original entities before they are set to follow cursor
     targettedEntity: '',
+    firstClick: true,
 
     init: function () {
         // Called on scene initialization.
@@ -63,7 +64,10 @@ AFRAME.registerSystem('main', {
                     //console.log(targetEl);
 
                     //if(targetEl.object3D){
+                    //if(!self.followingEntity){
                         self.targettedEntity = targetEl.getAttribute('id');
+                    //}
+
 
                     /*if(self.targettedEntity === 'gameboy'){
                         self.cursorEl.setAttribute('material','opacity',0.5);
@@ -76,6 +80,7 @@ AFRAME.registerSystem('main', {
                 });
             }
 
+            //this.entityUnfollowCursor('gameboy',this.gameboy,this.gameboyCollider);
 
         }.bind(this));
 
@@ -85,6 +90,11 @@ AFRAME.registerSystem('main', {
         }.bind(this));
 
         window.addEventListener('mouseup',function(e){
+
+            if(this.firstClick){
+                this.firstClick = false;
+                return;
+            }
 
             //console.log('clicked: ',this.targettedEntity);
             if(this.targettedEntity !== ''){
@@ -105,6 +115,8 @@ AFRAME.registerSystem('main', {
                 }
             }
         }.bind(this));
+
+
 
     },
 
