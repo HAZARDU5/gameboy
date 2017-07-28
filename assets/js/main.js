@@ -24,8 +24,8 @@ AFRAME.registerSystem('main', {
 
 
             var client = new XMLHttpRequest();
-            //client.open('GET', 'assets/roms/pd/geometrix/geometrix.gbc.base64.txt');
-            client.open('GET', 'assets/roms/commercial/super-mario-land/super-mario-land.gb.base64.txt');
+            client.open('GET', 'assets/roms/pd/geometrix/geometrix.gbc.base64.txt');
+            //client.open('GET', 'assets/roms/commercial/super-mario-land/super-mario-land.gb.base64.txt');
             client.onreadystatechange = function() {
 
                 var datauri = client.responseText;
@@ -49,21 +49,21 @@ AFRAME.registerSystem('main', {
 
             var colliderEls = AFRAME.utils.styleParser.parse(self.cursorEl.getAttribute('sphere-collider')).objects.split(',');
 
-            console.log('Els: ',colliderEls)
+            //console.log('Els: ',colliderEls)
 
             for(var i = 0; i < colliderEls.length; i++){
                 var el = document.querySelector(colliderEls[i]);
 
-                console.log('Added collider to: ',el.getAttribute('id'));
+                //console.log('Added collider to: ',el.getAttribute('id'));
 
                 el.addEventListener('hit',function(e){
 
-                    console.log('hit', e.target);
+                    //console.log('hit', e.target);
 
                     var targetEl = (e.target.parentNode !== self.el.sceneEl) ? e.target.parentNode : e.target;
 
 
-                    console.log('targetEl: ',targetEl);
+                    //console.log('targetEl: ',targetEl);
 
                     //if(targetEl.object3D){
                     //if(!self.followingEntity){
@@ -152,7 +152,13 @@ AFRAME.registerSystem('main', {
             entity.removeAttribute('dynamic-body');
             entity.setAttribute('look-at','#camera');
             entity.setAttribute('follow','target','#my-cursor');
+
             colliderEl.classList.add('ignore-ray');
+
+            //this.cursor.setAttribute('sphere-collider','objects','#collision-gameboy,#glass');
+
+
+        console.log('now ignoring: ',colliderEl);
 
             //this.cursor.removeAttribute('sphere-collider');
         //}
