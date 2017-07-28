@@ -24,8 +24,8 @@ AFRAME.registerSystem('main', {
 
 
             var client = new XMLHttpRequest();
-            client.open('GET', 'assets/roms/pd/geometrix/geometrix.gbc.base64.txt');
-            //client.open('GET', 'assets/roms/commercial/super-mario-land/super-mario-land.gb.base64.txt');
+            //client.open('GET', 'assets/roms/pd/geometrix/geometrix.gbc.base64.txt');
+            client.open('GET', 'assets/roms/commercial/super-mario-land/super-mario-land.gb.base64.txt');
             client.onreadystatechange = function() {
 
                 var datauri = client.responseText;
@@ -49,19 +49,21 @@ AFRAME.registerSystem('main', {
 
             var colliderEls = AFRAME.utils.styleParser.parse(self.cursorEl.getAttribute('sphere-collider')).objects.split(',');
 
-            //console.log('Els: ',colliderEls)
+            console.log('Els: ',colliderEls)
 
             for(var i = 0; i < colliderEls.length; i++){
                 var el = document.querySelector(colliderEls[i]);
 
+                console.log('Added collider to: ',el.getAttribute('id'));
+
                 el.addEventListener('hit',function(e){
 
-                    //console.log('hit', e.target);
+                    console.log('hit', e.target);
 
                     var targetEl = (e.target.parentNode !== self.el.sceneEl) ? e.target.parentNode : e.target;
 
 
-                    //console.log(targetEl);
+                    console.log('targetEl: ',targetEl);
 
                     //if(targetEl.object3D){
                     //if(!self.followingEntity){
@@ -99,15 +101,19 @@ AFRAME.registerSystem('main', {
             //console.log('clicked: ',this.targettedEntity);
             if(this.targettedEntity !== ''){
                 var targetEl = document.querySelector('#'+this.targettedEntity);
-                var colliderEl = document.querySelector('#'+this.targettedEntity+' .collider');
+                var colliderEl = targetEl.querySelector('.collider');
                 switch (this.targettedEntity){
                     case 'gameboy':
+
                         this.toggleEntityFollowCursor(this.targettedEntity,targetEl,colliderEl);
+                        break;
+                    case 'glass':
+                        this.toggleEntityFollowCursor(this.targettedEntity,targetEl,targetEl);
                         break;
                     case 'collision-table':
                     case 'collision-floor':
 
-                        this.entityUnfollowCursor('gameboy',self.gameboy,self.gameboyCollider);
+                        //this.entityUnfollowCursor('gameboy',self.gameboy,self.gameboyCollider);
                         break;
                     default:
                         //do nothing
@@ -147,6 +153,7 @@ AFRAME.registerSystem('main', {
             entity.setAttribute('look-at','#camera');
             entity.setAttribute('follow','target','#my-cursor');
             colliderEl.classList.add('ignore-ray');
+
             //this.cursor.removeAttribute('sphere-collider');
         //}
 
@@ -168,6 +175,7 @@ AFRAME.registerSystem('main', {
         entity.removeAttribute('look-at');
         this.cursorEl.setAttribute('material','opacity',0.5);
         colliderEl.classList.remove('ignore-ray');
+
     },
 
     tick: function (t, dt) {
