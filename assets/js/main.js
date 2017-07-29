@@ -108,6 +108,7 @@ AFRAME.registerSystem('main', {
                         this.toggleEntityFollowCursor(this.targettedEntity,targetEl,colliderEl);
                         break;
                     case 'glass':
+                    case 'picture':
                         this.toggleEntityFollowCursor(this.targettedEntity,targetEl,targetEl);
                         break;
                     case 'collision-table':

@@ -78,6 +78,8 @@
         <a-asset-item id="family-room-mtl" src="assets/obj/family-room/materials.mtl"></a-asset-item>
         <a-asset-item id="glass-obj" src="assets/obj/glass/model.obj"></a-asset-item>
         <a-asset-item id="glass-mtl" src="assets/obj/glass/materials.mtl"></a-asset-item>
+        <a-asset-item id="picture-obj" src="assets/obj/picture-frame/model.obj"></a-asset-item>
+        <a-asset-item id="picture-mtl" src="assets/obj/picture-frame/materials.mtl"></a-asset-item>
         <audio id="falling1-sound" src="assets/ogg/falling1.ogg"></audio>
         <audio id="falling2-sound" src="assets/ogg/falling2.ogg"></audio>
         <audio id="falling3-sound" src="assets/ogg/falling3.ogg"></audio>
@@ -96,10 +98,11 @@
         <a-entity scale="3 3 3" class="ignore-ray" obj-model="obj: #glass-obj; mtl: #glass-mtl"></a-entity>
     </a-cylinder>
 
+    <a-box id="picture" grabbable material="opacity:1" dynamic-body="mass: 0.1; shape: box;" auto-fall-respawn="fallHeight: -10; respawnPosition: 0.538 2.876 -2.606; respawnRotation: 0 0 0" drop-sounds="soundLand: #hurt0-sound, #hurt1-sound;" position="0.542 3.262 -2.589" geometry="depth:0.08;width:0.41;height:0.63">
+        <a-entity scale="1 1 1" class="ignore-ray" obj-model="obj: #picture-obj; mtl: #picture-mtl" position="0 0 0.026" rotation="-5.901465289847479 0 0"></a-entity>
+    </a-box>
+
     <a-entity id="room" class="ignore-ray" obj-model="obj: #family-room-obj; mtl: #family-room-mtl" position="0 3.5 0" scale="3 3 3">
-
-
-
         <a-box id="collision-table" static-body position="-0.174 -0.276 -0.786" depth="0.500" height="0.060" width="1.170" material="opacity:0"></a-box>
         <a-box id="collision-floor" static-body position="-0.083 -1.13 -0.565" depth="2.380" height="1.150" width="2.900" material="opacity:0"></a-box>
         <a-box id="collision-couch" static-body position="-0.169 -0.398 0.116" geometry="depth:0.61;height:0.18;width:1.53" material="opacity:0"></a-box>
@@ -120,7 +123,7 @@
             <a-plane id="game-screen2" class="ignore-ray" position="-0.005 0.052 -0.156" rotation="-90 1 0" material="shader: html; target: #mainCanvas; fps: 60;" width="0.12" height="0.12"></a-plane>
         </a-entity>-->
 
-    <a-ring id="my-cursor" radius-inner="0.05" radius-outer="0.1" sphere-collider="objects:#collision-gameboy,#glass; watch: false;" lerp="duration: 25; properties: position, rotation"></a-ring>
+    <a-ring id="my-cursor" radius-inner="0.05" radius-outer="0.1" sphere-collider="objects:#collision-gameboy,#glass,#picture; watch: false;" lerp="duration: 25; properties: position, rotation"></a-ring>
     <a-entity id="camera" camera position="2.861 3.249 -4.039"  rotation="-11.001 133.728 0" kinematic-body="radius: 0.5; enableSlopes: false;" auto-fall-respawn="fallHeight: -50; respawnPosition: 2.861 3.249 -4.039; respawnRotation: -11.001 133.728 0;" gladeye-jump-ability="maxJumps: 2; soundJump: #jump0-sound, #jump1-sound; soundLand: #hurt0-sound, #hurt1-sound; soundFalling: #falling1-sound, #falling2-sound, #falling3-sound, #falling4-sound;" raycaster universal-controls crawling-cursor="target: #my-cursor"></a-entity>
 
 
