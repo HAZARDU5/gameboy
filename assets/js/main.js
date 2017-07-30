@@ -17,7 +17,9 @@ AFRAME.registerSystem('main', {
         var mainCanvas = document.getElementById("mainCanvas");
         this.cursorEl = document.getElementById("my-cursor");
         this.gameboy = document.getElementById("gameboy");
+        this.tvScreen = document.getElementById("tv-screen");
         this.gameboyCollider = document.querySelector("#gameboy .collider");
+
 
         scene.addEventListener('loaded',function(){
 
@@ -83,6 +85,11 @@ AFRAME.registerSystem('main', {
             }
 
             //this.entityUnfollowCursor('gameboy',this.gameboy,this.gameboyCollider);
+
+            setTimeout(function(){
+                this.giphyTVEl = document.querySelector('#asdf-draggable-gif');
+            }.bind(this),5000);
+
 
         }.bind(this));
 
@@ -187,6 +194,14 @@ AFRAME.registerSystem('main', {
 
     tick: function (t, dt) {
         //console.log(self.camera.getAttribute('position'));
+
+        if(this.giphyTVEl){
+
+            console.log('src: ',this.giphyTVEl.getAttribute('src'));
+
+            this.tvScreen.setAttribute('material','src:url('+this.giphyTVEl.getAttribute('src')+')');
+        }
+
 
 
     }
