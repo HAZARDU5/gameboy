@@ -26,6 +26,7 @@
     <script src="https://cdn.rawgit.com/ngokevin/kframe/master/components/look-at/dist/aframe-look-at-component.js"></script>
     <script src="https://unpkg.com/aframe-lerp-component/dist/aframe-lerp-component.min.js"></script>
     <script src="https://rawgit.com/mayognaise/aframe-gif-shader/master/dist/aframe-gif-shader.min.js"></script>
+    <script src="https://rawgit.com/mayognaise/aframe-gif-component/master/dist/aframe-gif-component.min.js"></script>
 
     <script src="assets/js/components/auto-fall-respawn.js"></script>
     <script src="assets/js/components/gladeye-jump-ability.js"></script>
@@ -97,7 +98,7 @@
         <a-entity hand-controls="right" teleport-controls="collisionEntities:#collision-floor"></a-entity>
     </a-locomotor>-->
 
-    <a-plane id="tv-screen" material="shader:gif;src:url(https://media.giphy.com/media/3oz8xOvhnSpVOs9xza/giphy.gif)" position="-0.332 3.985 -4.836" geometry="width:3.04;height:1.550" rotation="1.891 2.063 0.057"></a-plane>
+    <a-plane id="tv-screen" material="shader:gif;src:url(https://media.giphy.com/media/3oz8xOvhnSpVOs9xza/giphy.gif)" gif position="-0.332 3.985 -4.836" geometry="width:3.04;height:1.550" rotation="1.891 2.063 0.057"></a-plane>
 
     <a-cylinder id="glass" grabbable radius="0.1" height="0.310" material="opacity:0" dynamic-body="mass: 0.05; shape: cylinder;" auto-fall-respawn="fallHeight: -10; respawnPosition: 0.538 2.876 -2.606; respawnRotation: 0 0 0" drop-sounds="soundLand: #hurt0-sound, #hurt1-sound;" position="0.538 2.876 -2.606">
         <a-entity scale="3 3 3" class="ignore-ray" obj-model="obj: #glass-obj; mtl: #glass-mtl"></a-entity>

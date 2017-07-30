@@ -88,6 +88,11 @@ AFRAME.registerSystem('main', {
 
             setTimeout(function(){
                 this.giphyTVEl = document.querySelector('#asdf-draggable-gif');
+
+                setInterval(function(){
+                    console.log('src: ',this.giphyTVEl.getAttribute('src'));
+                    this.tvScreen.setAttribute('material','src:url('+this.giphyTVEl.getAttribute('src')+')');
+                }.bind(this),5000); //switch TV display every 5 seconds
             }.bind(this),5000);
 
 
@@ -195,12 +200,7 @@ AFRAME.registerSystem('main', {
     tick: function (t, dt) {
         //console.log(self.camera.getAttribute('position'));
 
-        if(this.giphyTVEl){
 
-            console.log('src: ',this.giphyTVEl.getAttribute('src'));
-
-            this.tvScreen.setAttribute('material','src:url('+this.giphyTVEl.getAttribute('src')+')');
-        }
 
 
 
