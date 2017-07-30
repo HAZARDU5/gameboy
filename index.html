@@ -16,7 +16,7 @@
     <!-- A-Frame Scripts -->
 
     <script src="https://aframe.io/releases/0.6.1/aframe.min.js"></script>
-    <script src="//cdn.rawgit.com/donmccurdy/aframe-extras/v3.8.6/dist/aframe-extras.min.js"></script>
+    <script src="https://cdn.rawgit.com/donmccurdy/aframe-extras/v3.8.6/dist/aframe-extras.min.js"></script>
     <script src="https://unpkg.com/super-hands@1.0.1/dist/super-hands.min.js"></script>
     <script src="https://unpkg.com/@gladeye/aframe-preloader-component@1.0.2/dist/aframe-preloader-component.min.js"></script>
     <script src="https://unpkg.com/aframe-html-shader@0.2.0/dist/aframe-html-shader.min.js"></script>
@@ -25,13 +25,15 @@
     <script src="https://cdn.rawgit.com/fernandojsg/aframe-teleport-controls/master/dist/aframe-teleport-controls.min.js"></script>
     <script src="https://cdn.rawgit.com/ngokevin/kframe/master/components/look-at/dist/aframe-look-at-component.js"></script>
     <script src="https://unpkg.com/aframe-lerp-component/dist/aframe-lerp-component.min.js"></script>
-    <script src="https://rawgit.com/mayognaise/aframe-gif-shader/master/dist/aframe-gif-shader.min.js"></script>
+    <script src="https://cdn.rawgit.com/hazardu5/aframe-gif-shader/master/dist/aframe-gif-shader.js"></script>
     <script src="https://rawgit.com/mayognaise/aframe-gif-component/master/dist/aframe-gif-component.min.js"></script>
 
     <script src="assets/js/components/auto-fall-respawn.js"></script>
     <script src="assets/js/components/gladeye-jump-ability.js"></script>
     <script src="assets/js/components/drop-sounds.js"></script>
     <script src="assets/js/components/follow.js"></script>
+    <script src="assets/js/components/random-gif.js"></script>
+    <!--<script src="assets/js/components/vendor/aframe-gif-shader.js"></script>-->
 
     <!-- Gameboy Online Scripts -->
 
@@ -97,6 +99,55 @@
         <a-entity hand-controls="left" super-hands="stretchStartButtons:''; stretchEndButtons:'';" sphere-collider="objects:#gameboy"></a-entity>
         <a-entity hand-controls="right" teleport-controls="collisionEntities:#collision-floor"></a-entity>
     </a-locomotor>-->
+
+    <!--<a-plane id="tv-screen" material="shader:gif;src:url(https://media.giphy.com/media/3oz8xOvhnSpVOs9xza/giphy.gif)" gif position="-0.332 3.985 -4.836" geometry="width:3.04;height:1.550" rotation="1.891 2.063 0.057"
+            random-gif="
+            srcs:https://media.giphy.com/media/l3vRjGzBZmyvZ9lmM/giphy.gif,
+            https://media.giphy.com/media/3o7TKvAD1FgHjBZEiY/giphy.gif,
+            https://media.giphy.com/media/3o6ZthUPXCVvZthrry/giphy.gif,
+            https://media.giphy.com/media/fljfMP7p0VcuQ/giphy.gif,
+            https://media.giphy.com/media/26ufilhJ2SYOD0DWE/giphy.gif,
+            https://media.giphy.com/media/sBdbiqg1W3HsA/giphy.gif,
+            https://media.giphy.com/media/l3vQWKjeEU1eXFio0/giphy.gif,
+            https://media.giphy.com/media/kMiBbpXMjSM24/giphy.gif,
+            https://media.giphy.com/media/3o6Zt8zw0oPVXqM8qk/giphy.gif,
+            https://media.giphy.com/media/RsEw75jEYJzk4/giphy.gif,
+            https://media.giphy.com/media/H68I21auZWulO/giphy.gif,
+            https://media.giphy.com/media/3al8vLVKtngDS/giphy.gif,
+            https://media.giphy.com/media/3o7TKMispaWJOCs1eo/giphy.gif,
+            https://media.giphy.com/media/3oz8xR6E5JQzUHwxNK/giphy.gif,
+            https://media.giphy.com/media/3oz8xKTj9pYv45zRfi/giphy.gif,
+            https://media.giphy.com/media/bW6ZYe6xyD9Yc/giphy.gif,
+            https://media.giphy.com/media/3o6Zt7XS3RFLxHO9eU/giphy.gif,
+            https://media.giphy.com/media/y0pFrqtYhwbsY/giphy.gif,
+            https://media.giphy.com/media/3oz8xL8Wofm2IHqwzC/giphy.gif,
+            https://media.giphy.com/media/3oz8xGjX8gCKK4IJYA/giphy.gif,
+            https://media.giphy.com/media/3o6Zt08zwfYXz8MXfi/giphy.gif,
+            https://media.giphy.com/media/3oz8xKkuY65HJlC4lq/giphy.gif,
+            https://media.giphy.com/media/3o6Zth9mWz8jvNq9A4/giphy.gif,
+            https://media.giphy.com/media/NEtnEhsRz4Z0s/giphy.gif,
+            https://media.giphy.com/media/fHGmEd342MxO0/giphy.gif,
+            https://media.giphy.com/media/QNPqZFhebbulq/giphy.gif,
+            https://media.giphy.com/media/f9p9GclvDGqcM/giphy.gif,
+            https://media.giphy.com/media/NhdOe6ogq4H7y/giphy.gif,
+            https://media.giphy.com/media/B0P7G2kNeVa7K/giphy.gif,
+            https://media.giphy.com/media/Y44lGn2eJJ3u8/giphy.gif,
+            https://media.giphy.com/media/BYeNqOWfrJVC0/giphy.gif,
+            https://media.giphy.com/media/l2mNTMuUrtu12/giphy.gif,
+            https://media.giphy.com/media/Y1gxR6ODeHUcg/giphy.gif,
+            https://media.giphy.com/media/2Oyb4TwAu62yc/giphy.gif,
+            https://media.giphy.com/media/DGScon3dAnjiM/giphy.gif,
+            https://media.giphy.com/media/GukXcOuHNv1YY/giphy.gif,
+            https://media.giphy.com/media/PoYBUwAlb7E6k/giphy.gif,
+            https://media.giphy.com/media/2pMcWqNy2zzmo/giphy.gif,
+            https://media.giphy.com/media/10fiEGSRm19UIM/giphy.gif,
+            https://media.giphy.com/media/gkbJI9wtrEWbu/giphy.gif,
+            https://media.giphy.com/media/nUh257pPEyGze/giphy.gif,
+            https://media.giphy.com/media/MFKzRpC9iAK9W/giphy.gif,
+            https://media.giphy.com/media/Jh5v08041Suf6/giphy.gif,
+            https://media.giphy.com/media/ToMjGpC87kZY6cihIju/giphy.gif,
+            https://media.giphy.com/media/NMByM7lbV2Pyo/giphy.gif
+            "></a-plane>-->
 
     <a-plane id="tv-screen" material="shader:gif;src:url(https://media.giphy.com/media/3oz8xOvhnSpVOs9xza/giphy.gif)" gif position="-0.332 3.985 -4.836" geometry="width:3.04;height:1.550" rotation="1.891 2.063 0.057"></a-plane>
 
@@ -340,17 +391,14 @@
 </div>
 
 <div id="_giphy_tv"></div>
-<style>
-
-</style>
 <script>
     var _giphy_tv_tag="gameboy";
     var g = document.createElement('script'); g.type = 'text/javascript'; g.async = true;
     g.src = ('https:' == document.location.protocol ? 'https://' : 'http://') + 'giphy.com/static/js/widgets/tv.js';
     var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(g, s);
     setTimeout(function(){
-        var textWrapper = document.getElementById('asdf-text-wrapper');
-        textWrapper.parentNode.removeChild(textWrapper);
+        //var textWrapper = document.getElementById('asdf-text-wrapper');
+        //textWrapper.parentNode.removeChild(textWrapper);
 
         for(var i = 0; i < document.styleSheets.length; i++){
 
@@ -361,7 +409,7 @@
             }
         }
 
-    },1000);
+    },2000);
 </script>
 </body>
 </html>
