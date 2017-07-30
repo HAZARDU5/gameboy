@@ -86,14 +86,14 @@ AFRAME.registerSystem('main', {
 
             //this.entityUnfollowCursor('gameboy',this.gameboy,this.gameboyCollider);
 
-            setTimeout(function(){
+            /*setTimeout(function(){
                 this.giphyTVEl = document.querySelector('#asdf-draggable-gif');
 
                 setInterval(function(){
                     console.log('src: ',this.giphyTVEl.getAttribute('src'));
                     this.tvScreen.setAttribute('material','src:url('+this.giphyTVEl.getAttribute('src')+')');
                 }.bind(this),5000); //switch TV display every 5 seconds
-            }.bind(this),5000);
+            }.bind(this),5000);*/
 
 
         }.bind(this));
