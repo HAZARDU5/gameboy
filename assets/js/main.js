@@ -17,7 +17,9 @@ AFRAME.registerSystem('main', {
         var mainCanvas = document.getElementById("mainCanvas");
         this.cursorEl = document.getElementById("my-cursor");
         this.gameboy = document.getElementById("gameboy");
+        this.tvScreen = document.getElementById("tv-screen");
         this.gameboyCollider = document.querySelector("#gameboy .collider");
+
 
         scene.addEventListener('loaded',function(){
 
@@ -84,6 +86,16 @@ AFRAME.registerSystem('main', {
 
             //this.entityUnfollowCursor('gameboy',this.gameboy,this.gameboyCollider);
 
+            setTimeout(function(){
+                this.giphyTVEl = document.querySelector('#asdf-draggable-gif');
+
+                setInterval(function(){
+                    console.log('src: ',this.giphyTVEl.getAttribute('src'));
+                    this.tvScreen.setAttribute('material','src:url('+this.giphyTVEl.getAttribute('src')+')');
+                }.bind(this),5000); //switch TV display every 5 seconds
+            }.bind(this),5000);
+
+
         }.bind(this));
 
         this.gameboy.addEventListener('respawned',function(){
@@ -108,6 +120,7 @@ AFRAME.registerSystem('main', {
                         this.toggleEntityFollowCursor(this.targettedEntity,targetEl,colliderEl);
                         break;
                     case 'glass':
+                    case 'picture':
                         this.toggleEntityFollowCursor(this.targettedEntity,targetEl,targetEl);
                         break;
                     case 'collision-table':
@@ -186,6 +199,9 @@ AFRAME.registerSystem('main', {
 
     tick: function (t, dt) {
         //console.log(self.camera.getAttribute('position'));
+
+
+
 
 
     }
