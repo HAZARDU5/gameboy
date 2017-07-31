@@ -27,6 +27,10 @@
     <script src="https://unpkg.com/aframe-lerp-component/dist/aframe-lerp-component.min.js"></script>
     <!--<script src="https://cdn.rawgit.com/hazardu5/aframe-gif-shader/master/dist/aframe-gif-shader.js"></script>-->
     <!--<script src="https://rawgit.com/mayognaise/aframe-gif-component/master/dist/aframe-gif-component.min.js"></script>-->
+    <script src="https://unpkg.com/aframe-mirror-component/dist/aframe-mirror-component.min.js"></script>
+    <script src="https://cdn.rawgit.com/mflux/aframe-lod/46ba6e0f653e696c6ba14ff7860b7d0454bae64a/aframe-lod.js"></script>
+
+    <!--TODO: replace html shader component with aframe-draw-shader and access gameboy canvas ctx directly for better speed: <script src="https://rawgit.com/mayognaise/aframe-draw-shader/master/dist/aframe-draw-shader.min.js"></script> -->
 
     <script src="assets/js/components/auto-fall-respawn.js"></script>
     <script src="assets/js/components/gladeye-jump-ability.js"></script>
@@ -151,6 +155,10 @@
             https://media.giphy.com/media/NMByM7lbV2Pyo/giphy.gif
             "></a-plane>
 
+    <a-entity id="ball" grabbable geometry="primitive: sphere; radius: 0.2" position="-1.275 2.962 -2.642" material="opacity:0" dynamic-body="mass: 1; shape: sphere;" auto-fall-respawn="fallHeight: -10; respawnPosition: -1.275 2.962 -2.642; respawnRotation: 0 0 0" position="2.662 3.249 -1.553">
+        <a-sphere class="ignore-ray" mirror="resolution: 64; distance:5; repeat: true; interval: 1000; refraction: 0.1" radius="0.2">
+        </a-sphere>
+    </a-entity>
     <a-cylinder id="glass" grabbable radius="0.1" height="0.310" material="opacity:0" dynamic-body="mass: 0.05; shape: cylinder;" auto-fall-respawn="fallHeight: -10; respawnPosition: 0.538 2.876 -2.606; respawnRotation: 0 0 0" drop-sounds="soundLand: #hurt0-sound, #hurt1-sound;" position="0.538 2.876 -2.606">
         <a-entity scale="3 3 3" class="ignore-ray" obj-model="obj: #glass-obj; mtl: #glass-mtl"></a-entity>
     </a-cylinder>
@@ -187,7 +195,7 @@
             <a-plane id="game-screen2" class="ignore-ray" position="-0.005 0.052 -0.156" rotation="-90 1 0" material="shader: html; target: #mainCanvas; fps: 60;" width="0.12" height="0.12"></a-plane>
         </a-entity>-->
 
-    <a-ring id="my-cursor" radius-inner="0.05" radius-outer="0.1" sphere-collider="objects:#collision-gameboy,#glass; watch: false;" lerp="properties: position, rotation"></a-ring>
+    <a-ring id="my-cursor" radius-inner="0.05" radius-outer="0.1" sphere-collider="objects:#collision-gameboy,#glass,#ball; watch: false;" lerp="properties: position, rotation"></a-ring>
     <a-entity id="camera" camera position="2.861 3.249 -4.039"  rotation="-11.001 133.728 0" kinematic-body="radius: 0.5; enableSlopes: false;" auto-fall-respawn="fallHeight: -50; respawnPosition: 2.861 3.249 -4.039; respawnRotation: -11.001 133.728 0;" gladeye-jump-ability="maxJumps: 2; soundJump: #jump0-sound, #jump1-sound; soundLand: #hurt0-sound, #hurt1-sound; soundFalling: #falling1-sound, #falling2-sound, #falling3-sound, #falling4-sound;" raycaster universal-controls crawling-cursor="target: #my-cursor"></a-entity>
 
 
