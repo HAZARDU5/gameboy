@@ -116,11 +116,11 @@ AFRAME.registerSystem('main', {
                 var colliderEl = targetEl.querySelector('.collider');
                 switch (this.targettedEntity){
                     case 'gameboy':
-
                         this.toggleEntityFollowCursor(this.targettedEntity,targetEl,colliderEl);
                         break;
                     case 'glass':
                     case 'picture':
+                    case 'ball':
                         this.toggleEntityFollowCursor(this.targettedEntity,targetEl,targetEl);
                         break;
                     case 'collision-table':
@@ -152,15 +152,25 @@ AFRAME.registerSystem('main', {
         //if(this.followingEntity !== id){
             //console.log(id+' is now following cursor');
 
-            if(id === 'gameboy'){
-                this.cursorEl.setAttribute('material','opacity',0);
-            }
-
-            this.followingEntity = id;
             this.entityOriginalAttrs[id] = {
                 'grabbable': entity.getAttribute('grabbable'),
                 'dynamic-body': entity.getAttribute('dynamic-body')
             };
+
+            switch(id){
+                case 'gameboy':
+                    this.cursorEl.setAttribute('material','opacity',0);
+                    break;
+                case 'ball':
+                    this.cursorEl.setAttribute('material','opacity',0);
+                    this.entityOriginalAttrs[id].mirror = entity.getAttribute('mirror');
+                    //entity.setAttribute('mirror','repeat',false);
+                    //entity.removeAttribute('mirror');
+                    break;
+            }
+
+            this.followingEntity = id;
+
             entity.removeAttribute('grabbable');
             entity.removeAttribute('dynamic-body');
             entity.setAttribute('look-at','#camera');
@@ -188,6 +198,10 @@ AFRAME.registerSystem('main', {
         if(this.entityOriginalAttrs[id]){
             entity.setAttribute('grabbable',this.entityOriginalAttrs[id]['grabbable']);
             entity.setAttribute('dynamic-body',this.entityOriginalAttrs[id]['dynamic-body']);
+
+            if(id === 'ball'){
+                //entity.setAttribute('mirror',this.entityOriginalAttrs[id]['mirror']);
+            }
         }
 
         entity.removeAttribute('follow');
