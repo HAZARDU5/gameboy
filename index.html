@@ -155,8 +155,8 @@
             https://media.giphy.com/media/NMByM7lbV2Pyo/giphy.gif
             "></a-plane>
 
-    <a-entity id="ball" grabbable geometry="primitive: sphere; radius: 0.2" position="-1.275 2.962 -2.642" material="opacity:0" dynamic-body="mass: 1; shape: sphere;" auto-fall-respawn="fallHeight: -10; respawnPosition: -1.275 2.962 -2.642; respawnRotation: 0 0 0" position="2.662 3.249 -1.553">
-        <a-sphere class="ignore-ray" mirror="resolution: 64; distance:5; repeat: true; interval: 1000; refraction: 0.1" radius="0.2">
+    <a-entity id="ball"  mirror="resolution: 64; distance:5; repeat: true; interval: 1000; refraction: 0.1" grabbable geometry="primitive: sphere; radius: 0.2" position="-1.275 2.962 -2.642" material="opacity:0" dynamic-body="mass: 1; shape: sphere;" auto-fall-respawn="fallHeight: -10; respawnPosition: -1.275 2.962 -2.642; respawnRotation: 0 0 0" position="2.662 3.249 -1.553">
+        <a-sphere class="ignore-ray" radius="0.2">
         </a-sphere>
     </a-entity>
     <a-cylinder id="glass" grabbable radius="0.1" height="0.310" material="opacity:0" dynamic-body="mass: 0.05; shape: cylinder;" auto-fall-respawn="fallHeight: -10; respawnPosition: 0.538 2.876 -2.606; respawnRotation: 0 0 0" drop-sounds="soundLand: #hurt0-sound, #hurt1-sound;" position="0.538 2.876 -2.606">
