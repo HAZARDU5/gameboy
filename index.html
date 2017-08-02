@@ -27,7 +27,7 @@
     <script src="https://unpkg.com/aframe-lerp-component/dist/aframe-lerp-component.min.js"></script>
     <!--<script src="https://cdn.rawgit.com/hazardu5/aframe-gif-shader/master/dist/aframe-gif-shader.js"></script>-->
     <!--<script src="https://rawgit.com/mayognaise/aframe-gif-component/master/dist/aframe-gif-component.min.js"></script>-->
-    <script src="https://unpkg.com/aframe-mirror-component/dist/aframe-mirror-component.min.js"></script>
+    <!--<script src="https://unpkg.com/aframe-mirror-component/dist/aframe-mirror-component.min.js"></script>-->
     <script src="https://cdn.rawgit.com/mflux/aframe-lod/46ba6e0f653e696c6ba14ff7860b7d0454bae64a/aframe-lod.js"></script>
 
     <!--TODO: replace html shader component with aframe-draw-shader and access gameboy canvas ctx directly for better speed: <script src="https://rawgit.com/mayognaise/aframe-draw-shader/master/dist/aframe-draw-shader.min.js"></script> -->
@@ -73,12 +73,14 @@
     <script type="text/javascript" src="js/GameBoyIO.js"></script>
     <script>
         settings[2] = true; //force gb mode
+        settings[3] = 0.2; //set gameboy volume
     </script>
 
     <script src="assets/js/main.js"></script>
 </head>
 <body>
-<a-scene main physics>
+
+<a-scene main physics preloader="autoClose:false; clickToClose: true; closeLabelText: Start; autoInject: false; target: #preloader-modal; labelText: Loading {0}% Complete">
     <a-assets>
         <img id="gameboy-ad-img" src="assets/img/gameboy-ad-1989.jpg" />
         <img id="gameboy-ad2-img" src="assets/img/gameboy-ad.png" />
@@ -98,6 +100,7 @@
         <audio id="jump1-sound" src="assets/ogg/344305__musiclegends__jump14.ogg"></audio>
         <audio id="hurt0-sound" src="assets/ogg/344300__musiclegends__hit-hurt17.ogg"></audio>
         <audio id="hurt1-sound" src="assets/ogg/344301__musiclegends__hit-hurt13.ogg"></audio>
+        <audio id="radio" src="https://streaming.radionomy.com/DRIVE?lang=en-US%2cen%3bq%3d0.8" autoplay crossorigin="anonymous"></audio>
     </a-assets>
     <!--<a-locomotor>
         <a-entity hand-controls="left" super-hands="stretchStartButtons:''; stretchEndButtons:'';" sphere-collider="objects:#gameboy"></a-entity>
@@ -155,10 +158,11 @@
             https://media.giphy.com/media/NMByM7lbV2Pyo/giphy.gif
             "></a-plane>
 
-    <a-entity id="ball"  mirror="resolution: 64; distance:5; repeat: true; interval: 1000; refraction: 0.1" grabbable geometry="primitive: sphere; radius: 0.2" position="-1.275 2.962 -2.642" material="opacity:0" dynamic-body="mass: 1; shape: sphere;" auto-fall-respawn="fallHeight: -10; respawnPosition: -1.275 2.962 -2.642; respawnRotation: 0 0 0" position="2.662 3.249 -1.553">
+    <!--<a-entity id="ball"  mirror="resolution: 64; distance:5; repeat: true; interval: 1000; refraction: 0.1" grabbable geometry="primitive: sphere; radius: 0.2" position="-1.275 2.962 -2.642" material="opacity:0" dynamic-body="mass: 1; shape: sphere;" auto-fall-respawn="fallHeight: -10; respawnPosition: -1.275 2.962 -2.642; respawnRotation: 0 0 0" position="2.662 3.249 -1.553">
         <a-sphere class="ignore-ray" radius="0.2">
         </a-sphere>
-    </a-entity>
+    </a-entity>-->
+
     <a-cylinder id="glass" grabbable radius="0.1" height="0.310" material="opacity:0" dynamic-body="mass: 0.05; shape: cylinder;" auto-fall-respawn="fallHeight: -10; respawnPosition: 0.538 2.876 -2.606; respawnRotation: 0 0 0" drop-sounds="soundLand: #hurt0-sound, #hurt1-sound;" position="0.538 2.876 -2.606">
         <a-entity scale="3 3 3" class="ignore-ray" obj-model="obj: #glass-obj; mtl: #glass-mtl"></a-entity>
     </a-cylinder>
@@ -198,9 +202,83 @@
     <a-ring id="my-cursor" radius-inner="0.05" radius-outer="0.1" sphere-collider="objects:#collision-gameboy,#glass,#ball; watch: false;" lerp="properties: position, rotation"></a-ring>
     <a-entity id="camera" camera position="2.861 3.249 -4.039"  rotation="-11.001 133.728 0" kinematic-body="radius: 0.5; enableSlopes: false;" auto-fall-respawn="fallHeight: -50; respawnPosition: 2.861 3.249 -4.039; respawnRotation: -11.001 133.728 0;" gladeye-jump-ability="maxJumps: 2; soundJump: #jump0-sound, #jump1-sound; soundLand: #hurt0-sound, #hurt1-sound; soundFalling: #falling1-sound, #falling2-sound, #falling3-sound, #falling4-sound;" raycaster universal-controls crawling-cursor="target: #my-cursor"></a-entity>
 
-
-
 </a-scene>
+
+<div id="preloader-modal" class="modal instructions-modal" tabindex="-1" role="dialog" style="display: none;">
+    <div class="modal-dialog" role="document">
+
+        <div class="modal-content text-center">
+            <div class="modal-header">
+                <h1>Retro Room Demo</h1>
+            </div>
+            <div class="col-md-12">
+                <div class="row">
+                    <div class="col-sm-6">
+                        <strong>Keyboard</strong>
+                        <ul class="list-group">
+                            <li class="list-group-item">Movement<span class="badge">W</span><span class="badge">S</span><span class="badge">A</span><span class="badge">D</span></li>
+                            <li class="list-group-item">Gameboy D-Pad<span class="badge">I</span><span class="badge">K</span><span class="badge">J</span><span class="badge">L</span></li>
+                            <li class="list-group-item">Gameboy A<span class="badge">Z</span></li>
+                            <li class="list-group-item">Gameboy B<span class="badge">X</span></li>
+                            <li class="list-group-item">Gameboy Start<span class="badge">Enter</span></li>
+                            <li class="list-group-item">Gameboy Select<span class="badge">Shift</span></li>
+                        </ul>
+                    </div>
+                    <div class="col-sm-6">
+                        <strong>Mouse</strong>
+                        <ul class="list-group">
+                            <li class="list-group-item">Pick up / release object <span class="badge">Left click</span></li>
+                            <li class="list-group-item">Look<span class="badge">Mouse move</span></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xs-12">
+                        <i class="preloader-modal__ok fa fa-check fa-5x text-success" aria-hidden="true"></i>
+                        <i class="preloader-modal__spinner fa fa-cog fa-spin fa-5x fa-fw text-muted" aria-hidden="true"></i>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xs-12">
+                        <span class="progress-label">Loading 0%</span>
+                    </div>
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <div class="row">
+                    <div class="col-xs-12">
+                        <button type="button" class="btn btn-default btn-lg clearfix" data-dismiss="modal">Start</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<div id="instructions-modal" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">How To Play</h4>
+            </div>
+            <div class="modal-body">
+                <strong>Keyboard</strong>
+                <ul class="list-group">
+                    <li class="list-group-item">Move character forward <span class="badge">I</span></li>
+                    <li class="list-group-item">Move character backward <span class="badge">K</span></li>
+                    <li class="list-group-item">Character rotation <span class="badge">J</span> <span class="badge">L</span></li>
+                </ul>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Continue</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <div style="width: 100%; height: 100%; position: fixed; left: 0; top: 0; z-index: -1; overflow: hidden">
     <canvas id="mainCanvas"></canvas>
 </div>
