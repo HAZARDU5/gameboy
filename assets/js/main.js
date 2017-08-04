@@ -26,7 +26,9 @@ AFRAME.registerSystem('main', {
 
 
             var client = new XMLHttpRequest();
-            client.open('GET', 'assets/roms/pd/geometrix/geometrix.gbc.base64.txt');
+            //client.open('GET', 'assets/roms/pd/geometrix/geometrix.gbc.base64.txt');
+            client.open('GET', 'assets/roms/pd/tuff/tuff.gb.base64.txt');
+
             //client.open('GET', 'assets/roms/commercial/super-mario-land/super-mario-land.gb.base64.txt');
             client.onreadystatechange = function() {
 
