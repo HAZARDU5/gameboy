@@ -6,7 +6,6 @@
 
     <!-- Bootstrap Bootswatch theme CSS - other themes available here: https://bootswatch.com -->
     <link rel="stylesheet" href="https://cdn.rawgit.com/thomaspark/bootswatch/gh-pages/slate/bootstrap.min.css" />
-
     <link rel="stylesheet" href="assets/css/style.css" />
 
     <!-- Bootstrap JS Dependencies -->
@@ -17,7 +16,7 @@
 
     <script src="https://aframe.io/releases/0.6.1/aframe.min.js"></script>
     <script src="https://cdn.rawgit.com/donmccurdy/aframe-extras/v3.8.6/dist/aframe-extras.min.js"></script>
-    <script src="https://unpkg.com/super-hands@1.0.1/dist/super-hands.min.js"></script>
+    <script src="https://cdn.rawgit.com/donmccurdy/aframe-physics-system/v1.4.3/dist/aframe-physics-system.min.js"></script>
     <script src="https://unpkg.com/@gladeye/aframe-preloader-component@1.0.2/dist/aframe-preloader-component.min.js"></script>
     <script src="https://unpkg.com/aframe-html-shader@0.2.0/dist/aframe-html-shader.min.js"></script>
     <script src="https://cdn.rawgit.com/zcanter/aframe-gradient-sky/master/dist/gradientsky.min.js"></script>
@@ -25,6 +24,7 @@
     <script src="https://cdn.rawgit.com/fernandojsg/aframe-teleport-controls/master/dist/aframe-teleport-controls.min.js"></script>
     <script src="https://cdn.rawgit.com/ngokevin/kframe/master/components/look-at/dist/aframe-look-at-component.js"></script>
     <script src="https://unpkg.com/aframe-lerp-component/dist/aframe-lerp-component.min.js"></script>
+    <script src="https://unpkg.com/super-hands@1.1.0/dist/super-hands.min.js"></script>
     <!--<script src="https://cdn.rawgit.com/hazardu5/aframe-gif-shader/master/dist/aframe-gif-shader.js"></script>-->
     <!--<script src="https://rawgit.com/mayognaise/aframe-gif-component/master/dist/aframe-gif-component.min.js"></script>-->
     <!--<script src="https://unpkg.com/aframe-mirror-component/dist/aframe-mirror-component.min.js"></script>-->
@@ -80,6 +80,7 @@
 </head>
 <body>
 
+
 <a-scene main physics preloader="autoClose:false; clickToClose: true; closeLabelText: Start; autoInject: false; target: #preloader-modal; labelText: Loading {0}% Complete">
     <a-assets>
         <img id="gameboy-ad-img" src="assets/img/gameboy-ad-1989.jpg" />
@@ -101,6 +102,12 @@
         <audio id="hurt0-sound" src="assets/ogg/344300__musiclegends__hit-hurt17.ogg"></audio>
         <audio id="hurt1-sound" src="assets/ogg/344301__musiclegends__hit-hurt13.ogg"></audio>
         <audio id="radio" src="https://streaming.radionomy.com/DRIVE?lang=en-US%2cen%3bq%3d0.8" autoplay crossorigin="anonymous"></audio>
+        <a-mixin id="cube" geometry="primitive: box; width: 0.5; height: 0.5; depth: 0.5"
+                 hoverable grabbable drop-sounds="soundLand: #hurt0-sound, #hurt1-sound;"></a-mixin>
+        <a-mixin id="cube-hovered" material="opacity: 0.7; transparent: true">
+        </a-mixin>
+        <a-mixin id="cube-dragover" material="wireframe: true;"></a-mixin>
+        <!-- NOTE: don't put physics components on mixins or this will break the auto-fall-respawn component -->
     </a-assets>
     <!--<a-locomotor>
         <a-entity hand-controls="left" super-hands="stretchStartButtons:''; stretchEndButtons:'';" sphere-collider="objects:#gameboy"></a-entity>
@@ -163,7 +170,7 @@
         </a-sphere>
     </a-entity>-->
 
-    <a-cylinder id="glass" grabbable radius="0.1" height="0.310" material="opacity:0" dynamic-body="mass: 0.05; shape: cylinder;" auto-fall-respawn="fallHeight: -10; respawnPosition: 0.538 2.876 -2.606; respawnRotation: 0 0 0" drop-sounds="soundLand: #hurt0-sound, #hurt1-sound;" position="0.538 2.876 -2.606">
+    <a-cylinder id="glass" grabbable hoverable radius="0.1" height="0.310" material="opacity:0" dynamic-body="mass: 0.05; shape: cylinder;" auto-fall-respawn="fallHeight: -10; respawnPosition: 0.538 2.876 -2.606; respawnRotation: 0 0 0" drop-sounds="soundLand: #hurt0-sound, #hurt1-sound;" position="0.538 2.876 -2.606">
         <a-entity scale="3 3 3" class="ignore-ray" obj-model="obj: #glass-obj; mtl: #glass-mtl"></a-entity>
     </a-cylinder>
 
@@ -187,20 +194,19 @@
         <a-box id="collision-wall3" static-body position="-0.129 0.046 -1.825" geometry="depth:3.06;width:0.14;height:1.9" material="opacity:0" rotation="0 90.012 0"></a-box>
     </a-entity>
 
+    <a-entity id="cube" class="cube" mixin="cube" position="0.344 2.085 -4.668" material="color: red" dynamic-body auto-fall-respawn="fallHeight: -10; respawnPosition: 0.344 3 -4.668; respawnRotation: 0 0 0"></a-entity>
 
-    <a-entity id="gameboy" drop-sounds="soundLand: #hurt0-sound, #hurt1-sound;" grabbable auto-fall-respawn="fallHeight: -10; respawnPosition: -0.399 5 -2.332; respawnRotation: 0 0 0" class="ignore-ray" position="-0.399 5 -2.332" rotation="0 0 0" dynamic-body="mass: 50; shape: box;" obj-model="obj: #gameboy-obj; mtl: #gameboy-mtl">
+    <a-entity id="gameboy" drop-sounds="soundLand: #hurt0-sound, #hurt1-sound;" hoverable grabbable auto-fall-respawn="fallHeight: -10; respawnPosition: -0.399 5 -2.332; respawnRotation: 0 0 0" class="ignore-ray" position="-0.399 5 -2.332" rotation="0 0 0" dynamic-body="mass: 50; shape: box;" obj-model="obj: #gameboy-obj; mtl: #gameboy-mtl">
         <a-plane id="game-screen" class="ignore-ray" position="-0.005 0.052 -0.156" rotation="-90 1 0" material="shader: html; target: #mainCanvas; fps: 60;" width="0.12" height="0.12"></a-plane>
         <a-box id="collision-gameboy" class="collider" position="0 0.007 -0.063" depth="0.390" height="0.090" width="0.220" material="opacity:0"></a-box>
     </a-entity>
 
     <a-gradient-sky material="shader: gradient; topColor: 255 0 0; bottomColor: 0 121 255;" class="ignore-ray"></a-gradient-sky>
 
-    <!--<a-entity id="gameboy2" class="ignore-ray"  position="0 -0.2 -0.2" rotation="90 0 0" obj-model="obj: #gameboy-obj; mtl: #gameboy-mtl" material="shader: flat;">
-            <a-plane id="game-screen2" class="ignore-ray" position="-0.005 0.052 -0.156" rotation="-90 1 0" material="shader: html; target: #mainCanvas; fps: 60;" width="0.12" height="0.12"></a-plane>
-        </a-entity>-->
+    <a-ring id="my-cursor" radius-inner="0.05" radius-outer="0.1" sphere-collider="objects:#collision-gameboy,#glass,#ball,.cube; watch: true; radius: 0.1" lerp="properties: position, rotation"  super-hands static-body="shape: sphere; sphereRadius: 0.02;"></a-ring>
 
-    <a-ring id="my-cursor" radius-inner="0.05" radius-outer="0.1" sphere-collider="objects:#collision-gameboy,#glass,#ball; watch: false;" lerp="properties: position, rotation"></a-ring>
-    <a-entity id="camera" camera position="2.861 3.249 -4.039"  rotation="-11.001 133.728 0" kinematic-body="radius: 0.5; enableSlopes: false;" auto-fall-respawn="fallHeight: -50; respawnPosition: 2.861 3.249 -4.039; respawnRotation: -11.001 133.728 0;" gladeye-jump-ability="maxJumps: 2; soundJump: #jump0-sound, #jump1-sound; soundLand: #hurt0-sound, #hurt1-sound; soundFalling: #falling1-sound, #falling2-sound, #falling3-sound, #falling4-sound;" raycaster universal-controls crawling-cursor="target: #my-cursor"></a-entity>
+    <a-entity id="camera" camera position="2.861 3.249 -4.039"  rotation="-11.001 133.728 0" kinematic-body="radius: 0.5; enableSlopes: false;" auto-fall-respawn="fallHeight: -50; respawnPosition: 2.861 3.249 -4.039; respawnRotation: -11.001 133.728 0;" gladeye-jump-ability="maxJumps: 2; soundJump: #jump0-sound, #jump1-sound; soundLand: #hurt0-sound, #hurt1-sound; soundFalling: #falling1-sound, #falling2-sound, #falling3-sound, #falling4-sound;" raycaster universal-controls crawling-cursor="target: #my-cursor">
+    </a-entity>
 
 </a-scene>
 
@@ -254,28 +260,6 @@
             </div>
         </div>
 
-    </div>
-</div>
-
-<div id="instructions-modal" class="modal fade" tabindex="-1" role="dialog">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title">How To Play</h4>
-            </div>
-            <div class="modal-body">
-                <strong>Keyboard</strong>
-                <ul class="list-group">
-                    <li class="list-group-item">Move character forward <span class="badge">I</span></li>
-                    <li class="list-group-item">Move character backward <span class="badge">K</span></li>
-                    <li class="list-group-item">Character rotation <span class="badge">J</span> <span class="badge">L</span></li>
-                </ul>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-primary" data-dismiss="modal">Continue</button>
-            </div>
-        </div>
     </div>
 </div>
 
