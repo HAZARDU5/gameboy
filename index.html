@@ -25,6 +25,7 @@
     <script src="https://cdn.rawgit.com/ngokevin/kframe/master/components/look-at/dist/aframe-look-at-component.js"></script>
     <script src="https://unpkg.com/aframe-lerp-component/dist/aframe-lerp-component.min.js"></script>
     <script src="https://unpkg.com/super-hands@1.1.0/dist/super-hands.min.js"></script>
+    <script src="https://unpkg.com/aframe-randomizer-components@^3.0.1/dist/aframe-randomizer-components.min.js"></script>
     <!--<script src="https://cdn.rawgit.com/hazardu5/aframe-gif-shader/master/dist/aframe-gif-shader.js"></script>-->
     <!--<script src="https://rawgit.com/mayognaise/aframe-gif-component/master/dist/aframe-gif-component.min.js"></script>-->
     <!--<script src="https://unpkg.com/aframe-mirror-component/dist/aframe-mirror-component.min.js"></script>-->
@@ -101,7 +102,7 @@
         <audio id="jump1-sound" src="assets/ogg/344305__musiclegends__jump14.ogg"></audio>
         <audio id="hurt0-sound" src="assets/ogg/344300__musiclegends__hit-hurt17.ogg"></audio>
         <audio id="hurt1-sound" src="assets/ogg/344301__musiclegends__hit-hurt13.ogg"></audio>
-        <audio id="radio" src="https://streaming.radionomy.com/DRIVE?lang=en-US%2cen%3bq%3d0.8" autoplay crossorigin="anonymous"></audio>
+        <audio id="radio" src="https://streaming.radionomy.com/rmlradiosuonosoundmx?lang=en-US%2cen%3bq%3d0.8" autoplay crossorigin="anonymous"></audio>
         <a-mixin id="cube" geometry="primitive: box; width: 0.5; height: 0.5; depth: 0.5"
                  hoverable grabbable drop-sounds="soundLand: #hurt0-sound, #hurt1-sound;"></a-mixin>
         <a-mixin id="cube-hovered" material="opacity: 0.7; transparent: true">
